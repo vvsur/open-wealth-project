@@ -15,6 +15,6 @@
 
 Выбор сразу всех инструментов рынка не сделал сознательно, пожалейте Финам :)
 
-Надеюсь, что настройки интуитивно понятны (если нет, [http://groups.google.ru/group/open-wealth-project велкам]) 
+Надеюсь, что настройки интуитивно понятны (если нет, [http://groups.google.ru/group/open-wealth-project спрашивайте]) 
 
 [http://open-wealth-project.googlecode.com/files/FDownloader.screenshot1.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot1.png] [http://open-wealth-project.googlecode.com/files/FDownloader.screenshot2.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot2.png] [http://open-wealth-project.googlecode.com/files/FDownloader.screenshot3.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot3.png]
