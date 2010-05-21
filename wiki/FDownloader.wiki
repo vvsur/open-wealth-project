@@ -1,13 +1,20 @@
-#Описание утилиты загрузки CSV данных с Финама, и преобразования их в WL
+#summary Описание утилиты загрузки CSV данных с Финама, и преобразования их в WL
+#labels Featured
 
-= Introduction =
+= Введение =
 
-Add your content here.
+Утилита загрузки CSV данных с Финама, и преобразования их в WL.
+У меня работает, но программа сильно не тестировалась, о найденных багах нужно [http://code.google.com/p/open-wealth-project/issues/list сообщить]. А лучше исправить самостоятельно (доступ в svn дам).
 
+= Подробнее =
+Утилита предназначена для загрузки данных c [www.finam.ru/analysis/export/default.asp Финама].
+Программа понимает два ключа
+  * /S – прочитать настройки из файла, указанного после данного ключа
+  * /R – запуск загрузки, без вопросов
+Всё, что вы настраиваете в программе, сохраняется в файл owp.FDownloader.config.xml , при желании его можно скопировать/переименовать и скармливать с ключами /R /S в [http://www.windowsfaq.ru/content/view/338/46/1/1/ планировщике задач].
 
-= Details =
+Выбор сразу всех инструментов рынка не сделал сознательно, пожалейте Финам :)
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Надеюсь, что настройки интуитивно понятны (если нет, [http://groups.google.ru/group/open-wealth-project велкам]) 
+
+[http://open-wealth-project.googlecode.com/files/FDownloader.screenshot1.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot1.png] [http://open-wealth-project.googlecode.com/files/FDownloader.screenshot2.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot2.png] [http://open-wealth-project.googlecode.com/files/FDownloader.screenshot3.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot3.png]
