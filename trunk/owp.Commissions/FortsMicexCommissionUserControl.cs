@@ -6,8 +6,6 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-using System.Diagnostics;
-
 namespace owp
 {
     public partial class FortsMicexCommissionUserControl : UserControl
@@ -40,7 +38,7 @@ namespace owp
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://code.google.com/p/open-wealth-project/");
+            System.Diagnostics.Process.Start("http://code.google.com/p/open-wealth-project/wiki/Commissions");
         }
     }
 }
