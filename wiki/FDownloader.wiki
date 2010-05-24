@@ -1,7 +1,7 @@
 #summary Утилита загрузки CSV данных с Финама, и преобразования их в WL
 #labels Featured
 
-[http://code.google.com/p/open-wealth-project/downloads/detail?name=owp.FDownloader.exe owp.FDownloader.exe]
+[http://code.google.com/p/open-wealth-project/downloads/detail?name=owp.FDownloader.exe owp.FDownloader.exe (версия 2010.05.24)] 
 
 = Введение =
 
@@ -15,6 +15,8 @@
   * /S – прочитать настройки из файла, указанного после данного ключа
   * /R – запуск загрузки, без вопросов
 Всё, что вы настраиваете в программе, сохраняется в файл owp.FDownloader.config.xml , при желании его можно скопировать/переименовать и скармливать с ключами /R /S в [http://www.windowsfaq.ru/content/view/338/46/1/1/ планировщике задач].
+
+[http://www.windowsfaq.ru/content/view/338/46/1/1/ Планировщике задач] позволяет запускать задачи загрузки данных по выбранному Вами расписанию.
 
 Тиковые данные загружаются по дням (т.е. при загрузке данных за год, к Финаму будет 365 запросов на инструмент), остальные таймфреймы загружаются полностью за один запрос.
 
