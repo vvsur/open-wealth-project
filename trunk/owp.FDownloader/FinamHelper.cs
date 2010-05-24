@@ -170,6 +170,7 @@ namespace owp.FDownloader
 
             System.Net.WebClient webClient = InitWebClient(settings);
             webClient.Headers.Add("Referer", @"http://www.finam.ru/analysis/export/default.asp");
+
             return webClient.DownloadString(link);
         }
     }
@@ -386,6 +387,12 @@ namespace owp.FDownloader
                 //TODO Неверный фармат 
             }
 
+        }
+
+        // освобождаю память
+        public void Clear()
+        {
+            list.Clear();
         }
     }
 }

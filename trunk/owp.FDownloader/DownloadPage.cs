@@ -32,6 +32,8 @@ namespace owp.FDownloader
         public override Settings GetSetting() 
         {
             backgroundWorker.CancelAsync();
+            while (backgroundWorker.IsBusy)
+                System.Threading.Thread.Sleep(50);
             return settings;
         }
 
@@ -58,10 +60,12 @@ namespace owp.FDownloader
                         listDownloads.Add(new Bars(emitent));
                 }
 
-            backgroundWorker.ReportProgress(0, "Загружаю существующие CSV файлы");
-                foreach (Bars bars in listDownloads)
+                for (int i = 0; i < listDownloads.Count;++i)
                 {
-                    if (Directory.Exists(Path.Combine(settings.csvDir,FinamHelper.Period2String(settings.period))))
+                    Bars bars = listDownloads[i];
+                    backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "==== Работаю с " + bars.emitent.code);
+                    backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю существующие CSV файлы");
+                    if (Directory.Exists(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period))))
                         foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "(*).csv"))
                         {
                             if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
@@ -72,133 +76,130 @@ namespace owp.FDownloader
                                 csvFile.Close();
                             }
                         }
-                }
 
-            backgroundWorker.ReportProgress(0, "Загружаю существующие WL файлы");
-            foreach (Bars bars in listDownloads)
-            {
-                if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
-                bars.LoadWL( 
-                    Path.Combine(
-                        Path.Combine(
-                            Path.Combine(
-                                settings.wlDir, 
-                                FinamHelper.Period2String(settings.period)    ),
-                                VerifyFileName(bars.emitent.marketName)       ),
-                                bars.emitent.code + ".wl"                     )
-                            ); // как просто стало жить в Framework 4
-            }
-
-            if (settings.loadFromFinam)
-            {
-                backgroundWorker.ReportProgress(0, "Загружаю CSV с финама");
-                foreach (Bars bars in listDownloads)
-                {
+                    backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю существующие WL файлы");
                     if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
-                    string csv;
-
-                    if (settings.fromCSV)
-                    {
-                        settings.from = bars.Last;
-                    }
-
-                    DateTime from = settings.from;
-                    int days = (settings.to - settings.from).Days;
-                    for (int day4Tick = 0; day4Tick <= days; ++day4Tick)
-                    {
-                        //тиковые данные скачиваю по дням
-                        if (settings.period == 1)
-                        {
-                            settings.from = from.AddDays(day4Tick);
-                            settings.to = from.AddDays(day4Tick);
-                        }
-                        else
-                            day4Tick = int.MaxValue;
-
-                        backgroundWorker.ReportProgress(0, "Загружаю " + bars.emitent.code + " " + settings.from.ToShortDateString() + "-" + settings.to.ToShortDateString());
-                        do
-                        {
-                            if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
-                            csv = FinamHelper.Download(settings, bars.emitent);
-                            if (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.")
-                            {
-                                backgroundWorker.ReportProgress(0, "Финам просит подождать");
-                                System.Threading.Thread.Sleep(random.Next(10000));
-                                if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
-                                backgroundWorker.ReportProgress(0, "Пробую снова");
-                            }
-                        } while (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.");
-
-                        backgroundWorker.ReportProgress(0, "Анализирую");
-                        StringReader csvStringReader = new StringReader(csv);
-                        bars.LoadCSV(csvStringReader);
-                        csvStringReader.Close();
-
-                        if ((!settings.margeCsv) && (!settings.delCSV))
-                        {
-                            backgroundWorker.ReportProgress(0, "Сохраняю загруженный csv");
-                            // создаю уникальное имя для csv файла
-                            string fileName;
-                            string dir = Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period));
-                            fileName = VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code;
-
-                            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                            int i = 0;
-                            while (File.Exists(Path.Combine(dir, fileName + ".csv")))
-                            {
-                                ++i;
-                                fileName = VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + '(' + i + ')';
-                            }
-                            File.WriteAllText(Path.Combine(dir, fileName + ".csv"), csv);
-                        }
-                    }
-                }
-            }
-
-            if (settings.convertCSV2WL)
-            {
-                backgroundWorker.ReportProgress(0, "Сохраняю WL файлы");
-                foreach (Bars bars in listDownloads)
-                {
-                    if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
-                    bars.Save(
+                    bars.LoadWL(
                         Path.Combine(
                             Path.Combine(
                                 Path.Combine(
-                                    settings.wlDir, 
-                                    FinamHelper.Period2String(settings.period)    ),
-                                    VerifyFileName(bars.emitent.marketName)       ),
-                                    bars.emitent.code + ".wl"                     )
-                                );
-                }
-            }
+                                    settings.wlDir,
+                                    FinamHelper.Period2String(settings.period)),
+                                    VerifyFileName(bars.emitent.marketName)),
+                                    bars.emitent.code + ".wl")
+                                ); // как просто стало жить в Framework 4
 
-            if ((settings.margeCsv) || (settings.delCSV))
-            {
-                backgroundWorker.ReportProgress(0, "Удаляю CSV файлы");
-                foreach (Bars bars in listDownloads)
-                {
-                    if (Directory.Exists(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period))))
-                        foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "(*).csv"))
+                    if (settings.loadFromFinam)
+                    {
+                        backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю CSV с финама");
+                        if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
+                        string csv;
+
+                        if (settings.fromCSV)
                         {
-                            File.Delete(file);
+                            settings.from = bars.Last;
                         }
+
+                        DateTime from = settings.from;
+                        int days = (settings.to - settings.from).Days;
+                        for (int day4Tick = 0; day4Tick <= days; ++day4Tick)
+                        {
+                            //тиковые данные скачиваю по дням
+                            if (settings.period == 1)
+                            {
+                                settings.from = from.AddDays(day4Tick);
+                                settings.to = from.AddDays(day4Tick);
+                            }
+                            else
+                                day4Tick = int.MaxValue;
+
+                            backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю " + bars.emitent.code + " " + settings.from.ToShortDateString() + "-" + settings.to.ToShortDateString());
+                            do
+                            {
+                                if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
+                                try
+                                {
+                                    csv = FinamHelper.Download(settings, bars.emitent);
+                                }
+                                catch
+                                {
+                                    csv = String.Empty;
+                                }
+                                if (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.")
+                                {
+                                    backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Финам просит подождать");
+                                    System.Threading.Thread.Sleep(random.Next(10000));
+                                    if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
+                                    backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Пробую снова");
+                                }
+                            } while (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.");
+
+                            backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Анализирую");
+                            StringReader csvStringReader = new StringReader(csv);
+                            bars.LoadCSV(csvStringReader);
+                            csvStringReader.Close();
+
+                            if ((!settings.margeCsv) && (!settings.delCSV))
+                            {
+                                backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Сохраняю загруженный csv");
+                                // создаю уникальное имя для csv файла
+                                string fileName;
+                                string dir = Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period));
+                                fileName = VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code;
+
+                                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                                int j = 0;
+                                while (File.Exists(Path.Combine(dir, fileName + ".csv")))
+                                {
+                                    ++j;
+                                    fileName = VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + '(' + j + ')';
+                                }
+                                File.WriteAllText(Path.Combine(dir, fileName + ".csv"), csv);
+                            }
+                        }
+                        // восстанавлию, сбитые скачиванием по дням настройки
+                        settings.from = from;
+                        settings.to = from.AddDays(days);
+                    }
+
+                    if (settings.convertCSV2WL)
+                    {
+                        backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Сохраняю WL файлы");
+                        if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
+                        bars.Save(
+                            Path.Combine(
+                                Path.Combine(
+                                    Path.Combine(
+                                        settings.wlDir,
+                                        FinamHelper.Period2String(settings.period)),
+                                        VerifyFileName(bars.emitent.marketName)),
+                                        bars.emitent.code + ".wl")
+                                    );
+                    }
+
+                    if ((settings.margeCsv) || (settings.delCSV))
+                    {
+                        backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Удаляю CSV файлы");
+                        if (Directory.Exists(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period))))
+                            foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "(*).csv"))
+                            {
+                                File.Delete(file);
+                            }
+                    }
+
+
+                    if (settings.margeCsv)
+                    {
+                        backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Сохраняю объедененные CSV файлы");
+                        if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
+                        bars.SaveCSV(
+                            Path.Combine(
+                                Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)),
+                                VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + ".csv")
+                                    );
+                    }
+                    bars.Clear();
                 }
-            }
-                
-            if (settings.margeCsv)
-            {
-                backgroundWorker.ReportProgress(0, "Сохраняю объедененные CSV файлы");
-                foreach (Bars bars in listDownloads)
-                {
-                    if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
-                    bars.SaveCSV(
-                        Path.Combine(
-                            Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)),
-                            VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + ".csv")
-                                );
-                }
-            }
             backgroundWorker.ReportProgress(100, "Всё!!!");
         }
 

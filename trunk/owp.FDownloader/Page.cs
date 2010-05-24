@@ -14,10 +14,7 @@ namespace owp.FDownloader
 
         public Page() {}
 
-        public Page(Page previous)
-        {
-            this.previous = previous;
-        }
+        public Page(Page previous) {this.previous = previous;}
 
         public virtual void SetSetting(Settings settings) { this.settings = settings;  }
         public virtual Settings GetSetting() { return settings; }

@@ -157,6 +157,7 @@
             this.groupBoxProxy.Controls.Add(this.checkBoxProxyPassword);
             this.groupBoxProxy.Controls.Add(this.label2);
             this.groupBoxProxy.Controls.Add(this.textBoxPassword);
+            this.groupBoxProxy.Enabled = false;
             this.groupBoxProxy.Location = new System.Drawing.Point(10, 59);
             this.groupBoxProxy.Name = "groupBoxProxy";
             this.groupBoxProxy.Size = new System.Drawing.Size(385, 130);

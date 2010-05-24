@@ -25,7 +25,10 @@ namespace owp.FDownloader
         public override void SetSetting(Settings settings) 
         {
             base.SetSetting(settings);
-            finamTreeView.SetEmitents(settings.Emitents);
+            if ((settings.Emitents==null) || (settings.Emitents.Count == 0))
+                buttonRefresh_Click(null, null);
+            else
+                finamTreeView.SetEmitents(settings.Emitents);
         }
         public override Settings GetSetting() 
         {
