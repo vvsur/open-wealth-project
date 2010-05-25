@@ -111,7 +111,7 @@ namespace owp.FDownloader
                                 settings.to = from.AddDays(day4Tick);
                             }
                             else
-                                day4Tick = int.MaxValue;
+                                day4Tick = int.MaxValue-1;
 
                             backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю " + bars.emitent.code + " " + settings.from.ToShortDateString() + "-" + settings.to.ToShortDateString());
                             do
@@ -128,11 +128,23 @@ namespace owp.FDownloader
                                 if (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.")
                                 {
                                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Финам просит подождать");
-                                    System.Threading.Thread.Sleep(random.Next(10000));
+                                    System.Threading.Thread.Sleep(random.Next(30000));
                                     if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Пробую снова");
                                 }
-                            } while (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.");
+                                if (csv == string.Empty)
+                                {
+                                    backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Ошибка при скачивании");
+                                    System.Threading.Thread.Sleep(random.Next(30000));
+                                    if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
+                                    backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Пробую снова");
+                                }
+                            } while 
+                                (
+                                    (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.")
+                                ||
+                                    (csv==string.Empty)
+                                );
 
                             backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Анализирую");
                             StringReader csvStringReader = new StringReader(csv);
