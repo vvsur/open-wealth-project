@@ -3,9 +3,23 @@ using System.Collections.Generic;
 using System.Text;
 
 using System.IO;
+using System.Net;
 
 namespace owp.FDownloader
 {
+    /// <summary>
+    /// этот класс создался только ради увелечения таймаута
+    /// </summary>
+    public class TimeoutWebClient : WebClient
+    {
+        protected override WebRequest GetWebRequest(Uri address)
+        {
+            WebRequest webRequest = base.GetWebRequest(address);
+            webRequest.Timeout = 600000;
+            return webRequest;
+        }
+    }
+
     class FinamHelper
     {
         /// <summary>
@@ -15,7 +29,8 @@ namespace owp.FDownloader
         /// <returns></returns>
         private static System.Net.WebClient InitWebClient(Settings settings)
         {
-            System.Net.WebClient webClient = new System.Net.WebClient();
+            System.Net.WebClient webClient = new TimeoutWebClient();
+          
             // настраиваю прокси
             if (settings.useProxy) 
             {
@@ -147,8 +162,8 @@ namespace owp.FDownloader
         public static string Download(Settings settings, EmitentInfo emitent)
         {
             int format;
-            if (settings.period == 1) format = 6;
-            else format = 1;
+            if (settings.period == 1) format = 11;
+            else format = 5;
 
             string link = String.Format("http://195.128.78.52/{0}.{1}?d=d&market={2}&em={3}&p={4}&df={5}&mf={6}&yf={7}&dt={8}&mt={9}&yt={10}&f={11}&e=.{12}&datf={13}&cn={14}&dtf=1&tmf=1&MSOR=0&sep=3&sep2=1&at=1",
                 emitent.code,
@@ -205,12 +220,12 @@ namespace owp.FDownloader
     class Bar
     {
         public DateTime dt;
-        public Double
-            open,
-            high,
-            low,
-            close,
-            volume;
+        public Double open = 0;
+        public Double high = 0;
+        public Double low = 0;
+        public Double close = 0;
+        public Double volume = 0;
+        public Int64 id = 0;
     }
 
     /// <summary>
@@ -260,26 +275,50 @@ namespace owp.FDownloader
 
         public void SaveCSV(string fileName)
         {
+            if (list.Count == 0)
+                return;
+
             if (!Directory.Exists(Path.GetDirectoryName(fileName)))
                 Directory.CreateDirectory(Path.GetDirectoryName(fileName));
 
             StreamWriter csvFile = new StreamWriter(File.Open(fileName,FileMode.Create, FileAccess.Write) );
-            csvFile.WriteLine("<TICKER>;<PER>;<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>");
+
+            int period;
+            if ((list[0].id == 0) && (list[0].low == list[0].high))
+            {
+                period = 1;
+                csvFile.WriteLine("<DATE>,<TIME>,<LAST>,<VOL>,<ID>");
+            }
+            else
+            {
+                period = 2;
+                csvFile.WriteLine("<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>");
+            }
 
             foreach (Bar bar in list)
             {
-                csvFile.Write(this.emitent.code);
-                csvFile.Write(";???;");
-                csvFile.Write(bar.dt.ToString("yyyyMMdd;HHmmss;"));
-                csvFile.Write(bar.open.ToString());
-                csvFile.Write(';');
-                csvFile.Write(bar.high.ToString());
-                csvFile.Write(';');
-                csvFile.Write(bar.low.ToString());
-                csvFile.Write(';');
-                csvFile.Write(bar.close.ToString());
-                csvFile.Write(';');
-                csvFile.WriteLine(bar.volume.ToString());
+                if (period == 1)
+                {
+                    csvFile.Write(bar.dt.ToString("yyyyMMdd;HHmmss;"));
+                    csvFile.Write(bar.close.ToString());
+                    csvFile.Write(';');
+                    csvFile.Write(bar.volume.ToString());
+                    csvFile.Write(';');
+                    csvFile.WriteLine(bar.id.ToString());
+                }
+                else
+                {
+                    csvFile.Write(bar.dt.ToString("yyyyMMdd;HHmmss;"));
+                    csvFile.Write(bar.open.ToString());
+                    csvFile.Write(';');
+                    csvFile.Write(bar.high.ToString());
+                    csvFile.Write(';');
+                    csvFile.Write(bar.low.ToString());
+                    csvFile.Write(';');
+                    csvFile.Write(bar.close.ToString());
+                    csvFile.Write(';');
+                    csvFile.WriteLine(bar.volume.ToString());
+                }
             }
             csvFile.Close();
         }
@@ -309,7 +348,7 @@ namespace owp.FDownloader
             while ((last_bar < list.Count) && (list[last_bar].dt < bar.dt))
                 ++last_bar;
             // и если такого бара ещё нет, то вставляю
-            if ((last_bar==list.Count) || (list[last_bar].dt != bar.dt))
+            if ((last_bar == list.Count) || ((list[last_bar].dt != bar.dt) && (bar.id == 0)) || (list[last_bar].id != bar.id))
                 list.Insert(last_bar, bar);
         }
 
@@ -342,9 +381,9 @@ namespace owp.FDownloader
         {
             int period = 0;
             string line = csvFile.ReadLine();
-            if (line == "<TICKER>;<PER>;<DATE>;<TIME>;<LAST>;<VOL>") 
+            if (line == "<DATE>,<TIME>,<LAST>,<VOL>,<ID>")
                  period = 1;
-            if (line == "<TICKER>;<PER>;<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>") 
+            if (line == "<DATE>,<TIME>,<OPEN>,<HIGH>,<LOW>,<CLOSE>,<VOL>")
                  period = 2;
             if (period != 0)
             {
@@ -360,23 +399,24 @@ namespace owp.FDownloader
                         break;
                     }
                     Bar bar = new Bar();
-                    bar.dt = DateTime.ParseExact(attr[2] + attr[3], "yyyyMMddHHmmss", null);
+                    bar.dt = DateTime.ParseExact(attr[0] + attr[1], "yyyyMMddHHmmss", null);
 
                     if (period == 1)
                     {
-                        bar.close = Convert.ToDouble(attr[4].Replace('.', ','));
-                        bar.volume = Convert.ToDouble(attr[5].Replace('.', ','));
+                        bar.close = Convert.ToDouble(attr[2].Replace('.', ','));
+                        bar.volume = Convert.ToDouble(attr[3].Replace('.', ','));
+                        bar.id  = Convert.ToInt64(attr[4].Replace('.', ','));
                         bar.open = bar.close;
                         bar.high = bar.close;
                         bar.low = bar.close;
                     }
                     else
                     {
-                        bar.open = Convert.ToDouble(attr[4].Replace('.', ','));
-                        bar.high = Convert.ToDouble(attr[5].Replace('.', ','));
-                        bar.low = Convert.ToDouble(attr[6].Replace('.', ','));
-                        bar.close = Convert.ToDouble(attr[7].Replace('.', ','));
-                        bar.volume = Convert.ToDouble(attr[8].Replace('.', ','));
+                        bar.open = Convert.ToDouble(attr[2].Replace('.', ','));
+                        bar.high = Convert.ToDouble(attr[3].Replace('.', ','));
+                        bar.low = Convert.ToDouble(attr[4].Replace('.', ','));
+                        bar.close = Convert.ToDouble(attr[5].Replace('.', ','));
+                        bar.volume = Convert.ToDouble(attr[6].Replace('.', ','));
                     }
 
                     Add(bar);

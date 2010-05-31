@@ -270,6 +270,7 @@
             this.comboBoxPeriod.Name = "comboBoxPeriod";
             this.comboBoxPeriod.Size = new System.Drawing.Size(121, 21);
             this.comboBoxPeriod.TabIndex = 2;
+            this.comboBoxPeriod.SelectedIndexChanged += new System.EventHandler(this.comboBoxPeriod_SelectedIndexChanged);
             // 
             // dateTimePickerTo
             // 
@@ -298,6 +299,7 @@
             this.checkBoxMargeCSV.TabIndex = 0;
             this.checkBoxMargeCSV.Text = "Объединять CSV по одному инструменту";
             this.checkBoxMargeCSV.UseVisualStyleBackColor = true;
+            this.checkBoxMargeCSV.CheckedChanged += new System.EventHandler(this.checkBoxMargeCSV_CheckedChanged);
             // 
             // checkBoxLoadFromFinam
             // 

@@ -131,17 +131,9 @@ namespace owp.FDownloader
             groupBoxLoadSetting.Enabled = checkBoxLoadFromFinam.Checked;
         }
 
-        private void checkBoxConvertCSV2WL_CheckedChanged(object sender, EventArgs e)
-        {
-            checkBoxDelCSV.Enabled =
-            checkBoxDelCSV.Checked =
-            textBoxWLDir.Enabled =
-            labelWLDir.Enabled =
-            buttonWLDir.Enabled = checkBoxConvertCSV2WL.Checked;
-        }
-
         private void checkBoxDelCSV_CheckedChanged(object sender, EventArgs e)
         {
+            
             checkBoxMargeCSV.Enabled = ! checkBoxDelCSV.Checked;
         }
 
@@ -166,6 +158,34 @@ namespace owp.FDownloader
             folderBrowserDialog1.SelectedPath = Environment.CurrentDirectory;
             if (DialogResult.OK == folderBrowserDialog1.ShowDialog())
                 textBoxWLDir.Text = folderBrowserDialog1.SelectedPath;
+        }
+
+        private void comboBoxPeriod_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // для тиковых данных не разрешаю удалять csv, т.к. теряется инфа о id сделки
+            if (comboBoxPeriod.SelectedIndex == 0)
+            {
+                checkBoxDelCSV.Checked = false;
+                checkBoxDelCSV.Enabled = false;
+            }
+            else
+                checkBoxDelCSV.Enabled = true;
+        }
+
+        private void checkBoxConvertCSV2WL_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBoxDelCSV.Enabled =
+            checkBoxDelCSV.Checked =
+            textBoxWLDir.Enabled =
+            labelWLDir.Enabled =
+            buttonWLDir.Enabled = checkBoxConvertCSV2WL.Checked;
+
+            comboBoxPeriod_SelectedIndexChanged(sender, e);
+        }
+
+        private void checkBoxMargeCSV_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

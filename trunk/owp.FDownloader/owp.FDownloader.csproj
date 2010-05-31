@@ -47,7 +47,9 @@
     <Compile Include="DownloadPage.Designer.cs">
       <DependentUpon>DownloadPage.cs</DependentUpon>
     </Compile>
-    <Compile Include="FinamHelper.cs" />
+    <Compile Include="FinamHelper.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FinamTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
