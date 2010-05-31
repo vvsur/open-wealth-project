@@ -1,7 +1,11 @@
 #summary Утилита загрузки CSV данных с Финама, и преобразования их в WL
 #labels Featured
 
-[http://code.google.com/p/open-wealth-project/downloads/detail?name=owp.FDownloader.exe owp.FDownloader.exe (версия 2010.05.24)] 
+[http://code.google.com/p/open-wealth-project/downloads/detail?name=owp.FDownloader.exe owp.FDownloader.exe (версия 2010.05.31)] 
+
+CSV файлы, скачанные предыдущими версиями более не поддерживаются (изменился набор полей).
+
+В связи с [http://code.google.com/p/open-wealth-project/issues/detail?id=12 дефектом] в тиковых данных в WL и объединенных CSV файлах могут быть ошибки. Надо удалить WL и CSV тиковых данных, и перезакачать их.
 
 = Введение =
 
