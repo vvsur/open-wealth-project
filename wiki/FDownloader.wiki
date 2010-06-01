@@ -30,4 +30,13 @@ CSV файлы, скачанные предыдущими версиями бо�
 
 Надеюсь, что настройки интуитивно понятны (если нет, [http://groups.google.ru/group/open-wealth-project спрашивайте]) 
 
+= Связь =
+Вопросы задавать [http://groups.google.ru/group/open-wealth-project здесь]
+
+Обсуждать проект [http://groups.google.ru/group/open-wealth-project здесь]
+
+Дефекты заводить [http://code.google.com/p/open-wealth-project/issues/list здесь]
+
+= Скриншоты =
+
 [http://open-wealth-project.googlecode.com/files/FDownloader.screenshot1.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot1.png] [http://open-wealth-project.googlecode.com/files/FDownloader.screenshot2.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot2.png] [http://open-wealth-project.googlecode.com/files/FDownloader.screenshot3.png http://open-wealth-project.googlecode.com/files/FDownloader.screenshot3.png]
