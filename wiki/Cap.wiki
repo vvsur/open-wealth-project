@@ -17,3 +17,5 @@
 = Архитектура =
 
 Продумывается в данный момент. [http://groups.google.ru/group/open-wealth-project Присоединяйтесь]
+
+[https://docs.google.com/drawings/edit?id=1KqLTRrS7H6yfY6x5eSINSjrIIEG87ZZUdY2ZRJX3qX8&hl=ru Существующие наброски]
