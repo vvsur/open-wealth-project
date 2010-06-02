@@ -19,7 +19,9 @@
 
 = Архитектура =
 
-Продумывается в данный момент. [http://groups.google.ru/group/open-wealth-project Присоединяйтесь]
+Как будет взаимодействовать заглушка с Wealth Lab решено и [http://code.google.com/p/open-wealth-project/wiki/Cap4WL реализовано].
+
+Остальное продумывается в данный момент. [http://groups.google.ru/group/open-wealth-project Присоединяйтесь]
 
 Чтобы не писать интерфейсы к торговым системам с нуля, есть идея реализовать их через [http://stocksharp.com/ s#].
 
