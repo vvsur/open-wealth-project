@@ -3,6 +3,9 @@
 
 === Знающим C# [http://code.google.com/p/open-wealth-project/wiki/Why читать здесь] ===
 
+
+
+
 = Важно =
 [http://code.google.com/p/open-wealth-project/downloads/detail?name=owp.FDownloader.exe owp.FDownloader.exe (версия 2010.06.02)] 
 
