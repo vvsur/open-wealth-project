@@ -21,4 +21,6 @@
 
 Продумывается в данный момент. [http://groups.google.ru/group/open-wealth-project Присоединяйтесь]
 
+Чтобы не писать интерфейсы к торговым системам с нуля, есть идея реализовать их через [http://stocksharp.com/ s#].
+
 [https://docs.google.com/drawings/edit?id=1KqLTRrS7H6yfY6x5eSINSjrIIEG87ZZUdY2ZRJX3qX8&hl=ru Существующие наброски архитектуры]
