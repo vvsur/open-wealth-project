@@ -69,7 +69,7 @@ namespace owp.FDownloader
                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "==== Работаю с " + bars.emitent.code);
                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю существующие CSV файлы");
                     if (Directory.Exists(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period))))
-                        foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "(*).csv"))
+                        foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "-*.csv"))
                         {
                             if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                             if (File.Exists(file))

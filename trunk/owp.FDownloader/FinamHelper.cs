@@ -253,6 +253,8 @@ namespace owp.FDownloader
         /// <param name="fileName">Имя WL файла</param>
         public void Save(string fileName)
         {
+            if (list.Count == 0)
+                return;
             if (!Directory.Exists(Path.GetDirectoryName(fileName)))
                 Directory.CreateDirectory(Path.GetDirectoryName(fileName));
 
@@ -381,9 +383,9 @@ namespace owp.FDownloader
         {
             int period = 0;
             string line = csvFile.ReadLine();
-            if (line == "<DATE>,<TIME>,<LAST>,<VOL>,<ID>")
+            if (line == "<DATE>;<TIME>;<LAST>;<VOL>;<ID>")
                  period = 1;
-            if (line == "<DATE>,<TIME>,<OPEN>,<HIGH>,<LOW>,<CLOSE>,<VOL>")
+            if (line == "<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>")
                  period = 2;
             if (period != 0)
             {
@@ -391,13 +393,7 @@ namespace owp.FDownloader
                 while ((line = csvFile.ReadLine()) != null)
                 {
                     // Распарсить строку
-                    string[] attr = line.Split(';');
-                    if (attr[0] != emitent.code)
-                    // TODO добавить проверку PER
-                    {
-                        //TODO неверный фармат
-                        break;
-                    }
+                    string[] attr = line.Split(';');                  
                     Bar bar = new Bar();
                     bar.dt = DateTime.ParseExact(attr[0] + attr[1], "yyyyMMddHHmmss", null);
 
