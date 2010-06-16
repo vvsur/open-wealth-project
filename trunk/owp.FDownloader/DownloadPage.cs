@@ -12,6 +12,9 @@ namespace owp.FDownloader
 {
     public partial class DownloadPage : Page
     {
+        // подключаю log4net для ведения лога
+        private static readonly log4net.ILog l = log4net.LogManager.GetLogger(typeof(DownloadPage));
+
         public DownloadPage()
         {
             InitializeComponent();
@@ -28,12 +31,17 @@ namespace owp.FDownloader
             base.SetSetting(settings);
             if (!backgroundWorker.IsBusy)
                 backgroundWorker.RunWorkerAsync();
+            else
+                l.Error("backgroundWorker.IsBusy");
+
         }
         public override Settings GetSetting() 
         {
+            l.Debug("Остонавливаю backgroundWorker");
             backgroundWorker.CancelAsync();
             while (backgroundWorker.IsBusy)
             {
+                l.Debug("Жду освобождения backgroundWorker");
                 System.Threading.Thread.Sleep(100);
                 Application.DoEvents();
             }
@@ -52,11 +60,14 @@ namespace owp.FDownloader
 
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            l.Debug("стартовал backgroundWorker_DoWork");
+
             Random random = new Random(DateTime.Now.Millisecond);
             List<Bars> listDownloads = new List<Bars>();
 
             backgroundWorker.ReportProgress(0, "Формирую список эмитентов для обработки");
-                foreach(EmitentInfo emitent in settings.Emitents)
+            l.Debug("Формирую список эмитентов для обработки");
+            foreach (EmitentInfo emitent in settings.Emitents)
                 {
                     if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                     if (emitent.checed) 
@@ -68,8 +79,12 @@ namespace owp.FDownloader
                     Bars bars = listDownloads[i];
                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "==== Работаю с " + bars.emitent.code);
                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю существующие CSV файлы");
-                    if (Directory.Exists(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period))))
-                        foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "-*.csv"))
+
+                    l.Debug("==== Работаю с " + bars.emitent.code);
+                    l.Debug("Загружаю существующие CSV файлы");
+
+                    if (Directory.Exists(Path.Combine(settings.csvDir, FinamDataScale.ToString(settings.period))))
+                        foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamDataScale.ToString(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "-*.csv"))
                         {
                             if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                             if (File.Exists(file))
@@ -86,13 +101,14 @@ namespace owp.FDownloader
                         // тик из csv существует в wl или это новый тик не возможно
                         // поэтому для тиков wl вообще не загружается
                         backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю существующие WL файлы");
+                        l.Debug("Загружаю существующие WL файлы");
                         if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                         bars.LoadWL(
                             Path.Combine(
                                 Path.Combine(
                                     Path.Combine(
                                         settings.wlDir,
-                                        FinamHelper.Period2String(settings.period)),
+                                        FinamDataScale.ToString(settings.period)),
                                         VerifyFileName(bars.emitent.marketName)),
                                         bars.emitent.code + ".wl")
                                     ); // как просто стало жить в Framework 4
@@ -101,6 +117,7 @@ namespace owp.FDownloader
                     if (settings.loadFromFinam)
                     {
                         backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю CSV с финама");
+                        l.Debug("Загружаю CSV с финама");
                         if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                         string csv;
 
@@ -123,6 +140,7 @@ namespace owp.FDownloader
                                 day4Tick = int.MaxValue-1;
 
                             backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Загружаю " + bars.emitent.code + " " + settings.from.ToShortDateString() + "-" + settings.to.ToShortDateString());
+                            l.Debug("Загружаю " + bars.emitent.code + " " + settings.from.ToShortDateString() + "-" + settings.to.ToShortDateString());
                             do
                             {
                                 if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
@@ -132,7 +150,8 @@ namespace owp.FDownloader
                                 }
                                 catch
                                 {
-                                    csv = "catch FinamHelper.Download";
+                                    l.Error("Необробатываемый Exception в FinamHelper.Download");
+                                    csv = "Exception";
                                 }
                                 if (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.")
                                 {
@@ -141,7 +160,7 @@ namespace owp.FDownloader
                                     if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Пробую снова");
                                 }
-                                if (csv == "catch FinamHelper.Download")
+                                if (csv == "Exception")
                                 {
                                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Ошибка при скачивании");
                                     System.Threading.Thread.Sleep(random.Next(30000));
@@ -152,17 +171,19 @@ namespace owp.FDownloader
                                 (
                                     (csv == "Система уже обрабатывает Ваш запрос. Дождитесь окончания обработки.")
                                 ||
-                                    (csv == "catch FinamHelper.Download")
+                                    (csv == "Exception")
                                 );
 
                             if ((csv == String.Empty) || (csv.Length < 30))
                             {
                                 backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "нет данных");
+                                l.Debug("нет данных");
                                 if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                             }
                             else
                             {
                                 backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Анализирую");
+                                l.Debug("Анализирую");
                                 StringReader csvStringReader = new StringReader(csv);
                                 bars.LoadCSV(csvStringReader);
                                 csvStringReader.Close();
@@ -170,9 +191,10 @@ namespace owp.FDownloader
                                 if ((!settings.margeCsv) && (!settings.delCSV))
                                 {
                                     backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Сохраняю загруженный csv");
+                                    l.Debug("Сохраняю загруженный csv");
                                     // создаю уникальное имя для csv файла
                                     string fileName;
-                                    string dir = Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period));
+                                    string dir = Path.Combine(settings.csvDir, FinamDataScale.ToString(settings.period));
                                     fileName = VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + '-' + settings.to.ToString("yyyyMMdd");
 
                                     if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
@@ -185,6 +207,7 @@ namespace owp.FDownloader
                                     File.WriteAllText(Path.Combine(dir, fileName + ".csv"), csv);
                                 }
                             }
+                            System.Threading.Thread.Sleep(500); // иначе интерфейс виснит
                         }
                         // восстанавлию, сбитые скачиванием по дням настройки
                         settings.from = from;
@@ -194,13 +217,14 @@ namespace owp.FDownloader
                     if (settings.convertCSV2WL)
                     {
                         backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Сохраняю WL файлы");
+                        l.Debug("Сохраняю WL файлы");
                         if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                         bars.Save(
                             Path.Combine(
                                 Path.Combine(
                                     Path.Combine(
                                         settings.wlDir,
-                                        FinamHelper.Period2String(settings.period)),
+                                        FinamDataScale.ToString(settings.period)),
                                         VerifyFileName(bars.emitent.marketName)),
                                         bars.emitent.code + ".wl")
                                     );
@@ -209,8 +233,9 @@ namespace owp.FDownloader
                     if ((settings.margeCsv) || (settings.delCSV))
                     {
                         backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Удаляю CSV файлы");
-                        if (Directory.Exists(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period))))
-                            foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "(*).csv"))
+                        l.Debug("Удаляю CSV файлы");
+                        if (Directory.Exists(Path.Combine(settings.csvDir, FinamDataScale.ToString(settings.period))))
+                            foreach (string file in Directory.GetFiles(Path.Combine(settings.csvDir, FinamDataScale.ToString(settings.period)), VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + "(*).csv"))
                             {
                                 File.Delete(file);
                             }
@@ -220,16 +245,19 @@ namespace owp.FDownloader
                     if (settings.margeCsv)
                     {
                         backgroundWorker.ReportProgress((100 * i / listDownloads.Count), "Сохраняю объедененные CSV файлы");
+                        l.Debug("Сохраняю объедененные CSV файлы");
                         if (backgroundWorker.CancellationPending) { e.Cancel = true; return; } // пользователь отменил операцию
                         bars.SaveCSV(
                             Path.Combine(
-                                Path.Combine(settings.csvDir, FinamHelper.Period2String(settings.period)),
+                                Path.Combine(settings.csvDir, FinamDataScale.ToString(settings.period)),
                                 VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + ".csv")
                                     );
                     }
                     bars.Clear();
+                    System.Threading.Thread.Sleep(500); // иначе интерфейс виснит
                 }
             backgroundWorker.ReportProgress(100, "Всё!!!");
+            l.Info("backgroundWorker_DoWork закончил");
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -237,11 +265,13 @@ namespace owp.FDownloader
             if (e.Error != null)
             {
                 MessageBox.Show(e.Error.Message);
+                l.Error("Ошибка в backgroundWorker " + e);
             }
             else
                 if (e.Cancelled)
                 {
                     textBox.Text += "Отменено пользователем" + Environment.NewLine;
+                    l.Info("Отменено пользователем");
                 }
                 else
                     if (settings.autoFlag)
@@ -254,7 +284,9 @@ namespace owp.FDownloader
         {
             if (!String.IsNullOrEmpty((e.UserState as string)))
             {
+                // TODO сохранять в интерфейсе только последние N строк (для увелечения быстродействия)
                 textBox.Text += (e.UserState as string) + Environment.NewLine;
+                l.Debug("backgroundWorker_ProgressChanged " + (e.UserState as string));
             }
             textBox.SelectionStart = textBox.TextLength;
             textBox.ScrollToCaret(); 

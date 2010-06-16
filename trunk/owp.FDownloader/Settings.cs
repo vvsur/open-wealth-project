@@ -1,10 +1,13 @@
-﻿using System;
+﻿// http://stackoverflow.com/questions/46282/how-do-i-create-an-xmlnode-from-a-call-to-xmlserializer-serialize
+// http://openlandscape.wordpress.com/2007/10/13/dot-net-custom-name-value-config-sections/
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace owp.FDownloader
 {
-    public class Settings
+    public class Settings 
     {
         public bool autoFlag { get; set; } // берется не из файла, а из ключей запуска программы !!!!
 

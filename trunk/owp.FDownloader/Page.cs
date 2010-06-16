@@ -8,6 +8,8 @@ namespace owp.FDownloader
 {
     public class Page : UserControl
     {
+
+
         protected Settings settings;
         protected Page previous = null;
         protected Page next = null;

@@ -40,13 +40,11 @@
             this.buttonLoadSetting = new System.Windows.Forms.Button();
             this.groupBoxProxy = new System.Windows.Forms.GroupBox();
             this.groupBoxLoadSetting = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.checkBoxFromCSV = new System.Windows.Forms.CheckBox();
             this.checkBoxYesterday = new System.Windows.Forms.CheckBox();
             this.checkBoxToday = new System.Windows.Forms.CheckBox();
-            this.comboBoxPeriod = new System.Windows.Forms.ComboBox();
             this.dateTimePickerTo = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerFrom = new System.Windows.Forms.DateTimePicker();
             this.checkBoxMargeCSV = new System.Windows.Forms.CheckBox();
@@ -60,8 +58,14 @@
             this.textBoxWLDir = new System.Windows.Forms.TextBox();
             this.checkBoxDelCSV = new System.Windows.Forms.CheckBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.label6 = new System.Windows.Forms.Label();
+            this.comboBoxPeriod = new System.Windows.Forms.ComboBox();
+            this.aggregateComboBox = new System.Windows.Forms.ComboBox();
+            this.aggregateСheckBox = new System.Windows.Forms.CheckBox();
+            this.aggregateNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.groupBoxProxy.SuspendLayout();
             this.groupBoxLoadSetting.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.aggregateNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // checkBoxProxy
@@ -167,31 +171,20 @@
             // 
             // groupBoxLoadSetting
             // 
-            this.groupBoxLoadSetting.Controls.Add(this.label6);
             this.groupBoxLoadSetting.Controls.Add(this.label5);
             this.groupBoxLoadSetting.Controls.Add(this.label4);
             this.groupBoxLoadSetting.Controls.Add(this.checkBoxFromCSV);
             this.groupBoxLoadSetting.Controls.Add(this.checkBoxYesterday);
             this.groupBoxLoadSetting.Controls.Add(this.checkBoxToday);
-            this.groupBoxLoadSetting.Controls.Add(this.comboBoxPeriod);
             this.groupBoxLoadSetting.Controls.Add(this.dateTimePickerTo);
             this.groupBoxLoadSetting.Controls.Add(this.dateTimePickerFrom);
             this.groupBoxLoadSetting.Enabled = false;
-            this.groupBoxLoadSetting.Location = new System.Drawing.Point(10, 218);
+            this.groupBoxLoadSetting.Location = new System.Drawing.Point(10, 260);
             this.groupBoxLoadSetting.Name = "groupBoxLoadSetting";
-            this.groupBoxLoadSetting.Size = new System.Drawing.Size(385, 101);
+            this.groupBoxLoadSetting.Size = new System.Drawing.Size(385, 73);
             this.groupBoxLoadSetting.TabIndex = 10;
             this.groupBoxLoadSetting.TabStop = false;
             this.groupBoxLoadSetting.Text = "Параметры загрузки";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 75);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(37, 13);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "перод";
             // 
             // label5
             // 
@@ -250,28 +243,6 @@
             this.checkBoxToday.UseVisualStyleBackColor = true;
             this.checkBoxToday.CheckedChanged += new System.EventHandler(this.checkBoxToday_CheckedChanged);
             // 
-            // comboBoxPeriod
-            // 
-            this.comboBoxPeriod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPeriod.FormattingEnabled = true;
-            this.comboBoxPeriod.Items.AddRange(new object[] {
-            "тики",
-            "1 мин",
-            "5 мин",
-            "10 мин",
-            "15 мин",
-            "30 мин",
-            "1 час",
-            "1 день",
-            "1 неделя",
-            "1 месяц",
-            "1 час (с 10-30)"});
-            this.comboBoxPeriod.Location = new System.Drawing.Point(48, 72);
-            this.comboBoxPeriod.Name = "comboBoxPeriod";
-            this.comboBoxPeriod.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxPeriod.TabIndex = 2;
-            this.comboBoxPeriod.SelectedIndexChanged += new System.EventHandler(this.comboBoxPeriod_SelectedIndexChanged);
-            // 
             // dateTimePickerTo
             // 
             this.dateTimePickerTo.Enabled = false;
@@ -293,7 +264,7 @@
             this.checkBoxMargeCSV.AutoSize = true;
             this.checkBoxMargeCSV.Checked = true;
             this.checkBoxMargeCSV.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMargeCSV.Location = new System.Drawing.Point(17, 351);
+            this.checkBoxMargeCSV.Location = new System.Drawing.Point(17, 361);
             this.checkBoxMargeCSV.Name = "checkBoxMargeCSV";
             this.checkBoxMargeCSV.Size = new System.Drawing.Size(234, 17);
             this.checkBoxMargeCSV.TabIndex = 0;
@@ -304,7 +275,7 @@
             // checkBoxLoadFromFinam
             // 
             this.checkBoxLoadFromFinam.AutoSize = true;
-            this.checkBoxLoadFromFinam.Location = new System.Drawing.Point(10, 195);
+            this.checkBoxLoadFromFinam.Location = new System.Drawing.Point(10, 239);
             this.checkBoxLoadFromFinam.Name = "checkBoxLoadFromFinam";
             this.checkBoxLoadFromFinam.Size = new System.Drawing.Size(164, 17);
             this.checkBoxLoadFromFinam.TabIndex = 12;
@@ -317,7 +288,7 @@
             this.checkBoxConvertCSV2WL.AutoSize = true;
             this.checkBoxConvertCSV2WL.Checked = true;
             this.checkBoxConvertCSV2WL.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxConvertCSV2WL.Location = new System.Drawing.Point(17, 374);
+            this.checkBoxConvertCSV2WL.Location = new System.Drawing.Point(17, 384);
             this.checkBoxConvertCSV2WL.Name = "checkBoxConvertCSV2WL";
             this.checkBoxConvertCSV2WL.Size = new System.Drawing.Size(158, 17);
             this.checkBoxConvertCSV2WL.TabIndex = 13;
@@ -327,7 +298,7 @@
             // 
             // buttonCSVDir
             // 
-            this.buttonCSVDir.Location = new System.Drawing.Point(355, 325);
+            this.buttonCSVDir.Location = new System.Drawing.Point(355, 337);
             this.buttonCSVDir.Name = "buttonCSVDir";
             this.buttonCSVDir.Size = new System.Drawing.Size(31, 19);
             this.buttonCSVDir.TabIndex = 16;
@@ -338,7 +309,7 @@
             // labelCSVDir
             // 
             this.labelCSVDir.AutoSize = true;
-            this.labelCSVDir.Location = new System.Drawing.Point(14, 328);
+            this.labelCSVDir.Location = new System.Drawing.Point(14, 340);
             this.labelCSVDir.Name = "labelCSVDir";
             this.labelCSVDir.Size = new System.Drawing.Size(84, 13);
             this.labelCSVDir.TabIndex = 15;
@@ -346,14 +317,14 @@
             // 
             // textBoxCSVDir
             // 
-            this.textBoxCSVDir.Location = new System.Drawing.Point(104, 325);
+            this.textBoxCSVDir.Location = new System.Drawing.Point(104, 337);
             this.textBoxCSVDir.Name = "textBoxCSVDir";
             this.textBoxCSVDir.Size = new System.Drawing.Size(245, 20);
             this.textBoxCSVDir.TabIndex = 14;
             // 
             // buttonWLDir
             // 
-            this.buttonWLDir.Location = new System.Drawing.Point(355, 400);
+            this.buttonWLDir.Location = new System.Drawing.Point(355, 410);
             this.buttonWLDir.Name = "buttonWLDir";
             this.buttonWLDir.Size = new System.Drawing.Size(31, 19);
             this.buttonWLDir.TabIndex = 19;
@@ -364,7 +335,7 @@
             // labelWLDir
             // 
             this.labelWLDir.AutoSize = true;
-            this.labelWLDir.Location = new System.Drawing.Point(14, 400);
+            this.labelWLDir.Location = new System.Drawing.Point(14, 410);
             this.labelWLDir.Name = "labelWLDir";
             this.labelWLDir.Size = new System.Drawing.Size(80, 13);
             this.labelWLDir.TabIndex = 18;
@@ -372,7 +343,7 @@
             // 
             // textBoxWLDir
             // 
-            this.textBoxWLDir.Location = new System.Drawing.Point(104, 397);
+            this.textBoxWLDir.Location = new System.Drawing.Point(104, 407);
             this.textBoxWLDir.Name = "textBoxWLDir";
             this.textBoxWLDir.Size = new System.Drawing.Size(245, 20);
             this.textBoxWLDir.TabIndex = 17;
@@ -382,7 +353,7 @@
             this.checkBoxDelCSV.AutoSize = true;
             this.checkBoxDelCSV.Checked = true;
             this.checkBoxDelCSV.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxDelCSV.Location = new System.Drawing.Point(182, 374);
+            this.checkBoxDelCSV.Location = new System.Drawing.Point(182, 384);
             this.checkBoxDelCSV.Name = "checkBoxDelCSV";
             this.checkBoxDelCSV.Size = new System.Drawing.Size(213, 17);
             this.checkBoxDelCSV.TabIndex = 20;
@@ -390,10 +361,83 @@
             this.checkBoxDelCSV.UseVisualStyleBackColor = true;
             this.checkBoxDelCSV.CheckedChanged += new System.EventHandler(this.checkBoxDelCSV_CheckedChanged);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 196);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(60, 13);
+            this.label6.TabIndex = 22;
+            this.label6.Text = "Работаю с";
+            // 
+            // comboBoxPeriod
+            // 
+            this.comboBoxPeriod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPeriod.FormattingEnabled = true;
+            this.comboBoxPeriod.Items.AddRange(new object[] {
+            "тики",
+            "1 мин",
+            "5 мин",
+            "10 мин",
+            "15 мин",
+            "30 мин",
+            "1 час",
+            "1 день",
+            "1 неделя",
+            "1 месяц",
+            "1 час (с 10-30)"});
+            this.comboBoxPeriod.Location = new System.Drawing.Point(70, 192);
+            this.comboBoxPeriod.Name = "comboBoxPeriod";
+            this.comboBoxPeriod.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxPeriod.TabIndex = 21;
+            this.comboBoxPeriod.SelectedIndexChanged += new System.EventHandler(this.comboBoxPeriod_SelectedIndexChanged);
+            // 
+            // aggregateComboBox
+            // 
+            this.aggregateComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.aggregateComboBox.Enabled = false;
+            this.aggregateComboBox.FormattingEnabled = true;
+            this.aggregateComboBox.Items.AddRange(new object[] {
+            "Тикам",
+            "Секундам",
+            "Минутам",
+            "Дням",
+            "Неделям",
+            "Месяцам",
+            "Объемам"});
+            this.aggregateComboBox.Location = new System.Drawing.Point(265, 217);
+            this.aggregateComboBox.Name = "aggregateComboBox";
+            this.aggregateComboBox.Size = new System.Drawing.Size(121, 21);
+            this.aggregateComboBox.TabIndex = 23;
+            // 
+            // aggregateСheckBox
+            // 
+            this.aggregateСheckBox.AutoSize = true;
+            this.aggregateСheckBox.Enabled = false;
+            this.aggregateСheckBox.Location = new System.Drawing.Point(10, 217);
+            this.aggregateСheckBox.Name = "aggregateСheckBox";
+            this.aggregateСheckBox.Size = new System.Drawing.Size(187, 17);
+            this.aggregateСheckBox.TabIndex = 24;
+            this.aggregateСheckBox.Text = "Дополнительно агригировать к";
+            this.aggregateСheckBox.UseVisualStyleBackColor = true;
+            // 
+            // aggregateNumericUpDown
+            // 
+            this.aggregateNumericUpDown.Enabled = false;
+            this.aggregateNumericUpDown.Location = new System.Drawing.Point(204, 217);
+            this.aggregateNumericUpDown.Name = "aggregateNumericUpDown";
+            this.aggregateNumericUpDown.Size = new System.Drawing.Size(55, 20);
+            this.aggregateNumericUpDown.TabIndex = 25;
+            // 
             // SettingsPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.aggregateNumericUpDown);
+            this.Controls.Add(this.aggregateСheckBox);
+            this.Controls.Add(this.aggregateComboBox);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.comboBoxPeriod);
             this.Controls.Add(this.checkBoxDelCSV);
             this.Controls.Add(this.buttonWLDir);
             this.Controls.Add(this.labelWLDir);
@@ -414,6 +458,7 @@
             this.groupBoxProxy.PerformLayout();
             this.groupBoxLoadSetting.ResumeLayout(false);
             this.groupBoxLoadSetting.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.aggregateNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -433,13 +478,11 @@
         private System.Windows.Forms.Button buttonLoadSetting;
         private System.Windows.Forms.GroupBox groupBoxProxy;
         private System.Windows.Forms.GroupBox groupBoxLoadSetting;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox checkBoxFromCSV;
         private System.Windows.Forms.CheckBox checkBoxYesterday;
         private System.Windows.Forms.CheckBox checkBoxToday;
-        private System.Windows.Forms.ComboBox comboBoxPeriod;
         private System.Windows.Forms.DateTimePicker dateTimePickerTo;
         private System.Windows.Forms.DateTimePicker dateTimePickerFrom;
         private System.Windows.Forms.CheckBox checkBoxMargeCSV;
@@ -453,5 +496,10 @@
         private System.Windows.Forms.TextBox textBoxWLDir;
         private System.Windows.Forms.CheckBox checkBoxDelCSV;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox comboBoxPeriod;
+        private System.Windows.Forms.ComboBox aggregateComboBox;
+        private System.Windows.Forms.CheckBox aggregateСheckBox;
+        private System.Windows.Forms.NumericUpDown aggregateNumericUpDown;
     }
 }

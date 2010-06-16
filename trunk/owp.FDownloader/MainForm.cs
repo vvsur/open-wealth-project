@@ -10,9 +10,19 @@ namespace owp.FDownloader
 {
     public partial class MainForm : Form
     {
+        // подключаю log4net для ведения лога
+        private static readonly log4net.ILog l = log4net.LogManager.GetLogger(typeof(MainForm));
+
         public MainForm()
         {
             InitializeComponent();
+
+            // инициирую log4net из ресурса
+            System.Xml.XmlDocument objDocument = new System.Xml.XmlDocument();
+            objDocument.LoadXml(owp.FDownloader.Properties.Resources.log4net);            
+            log4net.Config.XmlConfigurator.Configure(objDocument.DocumentElement);
+
+            l.Debug("Приложение стартовало");
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -31,15 +41,23 @@ namespace owp.FDownloader
         {
             if (сorrentPage != null)
             {
+                l.Debug("Удаляю страницу " + сorrentPage.GetType().ToString() );
                 this.Controls.Remove(сorrentPage);
                 settings = сorrentPage.GetSetting();
             }
             сorrentPage = newCorrentPage;
             if (сorrentPage != null)
             {
+                l.Debug("Добавляю страницу " + сorrentPage.GetType().ToString());
                 this.Controls.Add(сorrentPage);
-                сorrentPage.SetSetting(settings);
-
+                try
+                {
+                    сorrentPage.SetSetting(settings);
+                }
+                catch (Exception e)
+                {
+                    l.Error("Необробатываемое исключение в " + сorrentPage.GetType() + " " + e);
+                }
                 buttonNext.Enabled = сorrentPage.NextExists();
                 buttonPrevious.Enabled = сorrentPage.PreviousExists();
             }

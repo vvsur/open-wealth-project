@@ -22,6 +22,9 @@ namespace owp.FDownloader
 
     class FinamHelper
     {
+        // подключаю log4net для ведения лога
+        private static readonly log4net.ILog l = log4net.LogManager.GetLogger(typeof(FinamHelper));
+
         /// <summary>
         /// Создается, и инициируется WebClient
         /// </summary>
@@ -29,6 +32,7 @@ namespace owp.FDownloader
         /// <returns></returns>
         private static System.Net.WebClient InitWebClient(Settings settings)
         {
+            l.Debug("Создаю WebClient");
             System.Net.WebClient webClient = new TimeoutWebClient();
           
             // настраиваю прокси
@@ -53,10 +57,21 @@ namespace owp.FDownloader
         /// <returns>Список эмитентов</returns>
         public static List<EmitentInfo> DownloadEmitents(Settings settings)
         {
+            l.Debug("Скачиваю список эмитентов из финама");
             System.Net.WebClient webClient = InitWebClient(settings);
 
-            // скачиваю интерфейс
-            string marketsString = webClient.DownloadString(@"http://www.finam.ru/analysis/export/default.asp");
+            string marketsString = string.Empty;
+
+            try
+            {
+                // скачиваю интерфейс
+                marketsString = webClient.DownloadString(@"http://www.finam.ru/analysis/export/default.asp");
+            }
+            catch (Exception e)
+            {
+                l.Error("Не смог скачать интерфейс с финама " + e);
+                return null;
+            }
 
             String sOption = @"<option\s+?.*?value=""(?<id>[0-9]+)"".*?>(?<name>.+?)</option>";
             String sSelect = @"<select(.|\n)+?id=""market""(.|\n)+?(" + sOption + ")+?(.|\n)*?</select>";
@@ -66,7 +81,7 @@ namespace owp.FDownloader
 
             if (!m.Success)
             {
-                //TODO Ошибка парсинга
+                l.Error("Ошибка парсинга <select id=market>");
                 return null;
             }
 
@@ -130,32 +145,8 @@ namespace owp.FDownloader
             }
             else
             {
-                // TODO ошибка парсинга
+                l.Error("Ошибка парсинга export.js");
                 return null;
-            }
-        }
-
-        /// <summary>
-        /// преобразует числовое значение периода, используемое на форме Финама, в строковое значение
-        /// </summary>
-        /// <param name="period">числовое значение периода, используемое на форме Финама</param>
-        /// <returns>строковое значение, пригодное для названий папок</returns>
-        public static string Period2String(int period)
-        {
-            switch (period)
-            {
-                case 1: return "tick";
-                case 2: return "1min";
-                case 3: return "5min";
-                case 4: return "10min";
-                case 5: return "15min";
-                case 6: return "30min";
-                case 7: return "1h";
-                case 8: return "1d";
-                case 9: return "1w";
-                case 10: return "1m";
-                case 11: return "1hFrom1030";
-                default: return "error";
             }
         }
 
@@ -183,10 +174,23 @@ namespace owp.FDownloader
                 emitent.code
                     );
 
+            l.Debug("Скачиваю " + link);
+
             System.Net.WebClient webClient = InitWebClient(settings);
             webClient.Headers.Add("Referer", @"http://www.finam.ru/analysis/export/default.asp");
 
-            return webClient.DownloadString(link);
+            string result = string.Empty;
+            try
+            {
+                result = webClient.DownloadString(link);
+            }
+            catch (Exception e)
+            {
+                result = "Exception";
+                l.Info("Ошибка при скачивании " + e);
+            }
+
+            return result;
         }
     }
 
@@ -233,6 +237,9 @@ namespace owp.FDownloader
     /// </summary>
     class Bars
     {
+        // подключаю log4net для ведения лога
+        private static readonly log4net.ILog l = log4net.LogManager.GetLogger(typeof(Bars));
+
         private List<Bar> list = new List<Bar>();
         public EmitentInfo emitent { get; set; }
         //public DateTime from { get; set; }
@@ -254,7 +261,11 @@ namespace owp.FDownloader
         public void Save(string fileName)
         {
             if (list.Count == 0)
+            {
+                l.Debug("Не сохраняю bars т.к. list.Count == 0");
                 return;
+            }
+            l.Debug("Сохраняю bars в wl " + fileName);
             if (!Directory.Exists(Path.GetDirectoryName(fileName)))
                 Directory.CreateDirectory(Path.GetDirectoryName(fileName));
 
@@ -278,7 +289,11 @@ namespace owp.FDownloader
         public void SaveCSV(string fileName)
         {
             if (list.Count == 0)
+            {
+                l.Debug("Не сохраняю bars т.к. list.Count == 0");
                 return;
+            }
+            l.Debug("Сохраняю bars в csv " + fileName);
 
             if (!Directory.Exists(Path.GetDirectoryName(fileName)))
                 Directory.CreateDirectory(Path.GetDirectoryName(fileName));
@@ -337,6 +352,7 @@ namespace owp.FDownloader
         /// <param name="bar">Вставляемый бар</param>
         private void Add(Bar bar)
         {
+            l.Debug("Добавляю bar");
             if (list.Count == 0)
             {
                 list.Add(bar);
@@ -356,6 +372,8 @@ namespace owp.FDownloader
 
         public void LoadWL(string fileName)
         {
+            l.Debug("Читаю bars из " + fileName);
+
             if (!File.Exists(fileName)) return;
             
             BinaryReader wlFile = new BinaryReader(File.Open(fileName, FileMode.Open, FileAccess.Read));
@@ -381,6 +399,8 @@ namespace owp.FDownloader
 
         public void LoadCSV(TextReader csvFile)
         {
+            l.Debug("Читаю bars из csv");
+
             int period = 0;
             string line = csvFile.ReadLine();
             if (line == "<DATE>;<TIME>;<LAST>;<VOL>;<ID>")
@@ -397,30 +417,39 @@ namespace owp.FDownloader
                     Bar bar = new Bar();
                     bar.dt = DateTime.ParseExact(attr[0] + attr[1], "yyyyMMddHHmmss", null);
 
-                    if (period == 1)
+                    System.Globalization.NumberFormatInfo nfi = new System.Globalization.CultureInfo("en-US", false).NumberFormat;
+                    nfi.NumberDecimalSeparator = ",";
+                    try
                     {
-                        bar.close = Convert.ToDouble(attr[2].Replace('.', ','));
-                        bar.volume = Convert.ToDouble(attr[3].Replace('.', ','));
-                        bar.id  = Convert.ToInt64(attr[4].Replace('.', ','));
-                        bar.open = bar.close;
-                        bar.high = bar.close;
-                        bar.low = bar.close;
-                    }
-                    else
-                    {
-                        bar.open = Convert.ToDouble(attr[2].Replace('.', ','));
-                        bar.high = Convert.ToDouble(attr[3].Replace('.', ','));
-                        bar.low = Convert.ToDouble(attr[4].Replace('.', ','));
-                        bar.close = Convert.ToDouble(attr[5].Replace('.', ','));
-                        bar.volume = Convert.ToDouble(attr[6].Replace('.', ','));
-                    }
+                        if (period == 1)
+                        {
+                            bar.close = Convert.ToDouble(attr[2].Replace('.', ','), nfi);
+                            bar.volume = Convert.ToDouble(attr[3].Replace('.', ','), nfi);
+                            bar.id = Convert.ToInt64(attr[4].Replace('.', ','), nfi);
+                            bar.open = bar.close;
+                            bar.high = bar.close;
+                            bar.low = bar.close;
+                        }
+                        else
+                        {
+                            bar.open = Convert.ToDouble(attr[2].Replace('.', ','), nfi);
+                            bar.high = Convert.ToDouble(attr[3].Replace('.', ','), nfi);
+                            bar.low = Convert.ToDouble(attr[4].Replace('.', ','), nfi);
+                            bar.close = Convert.ToDouble(attr[5].Replace('.', ','), nfi);
+                            bar.volume = Convert.ToDouble(attr[6].Replace('.', ','), nfi);
+                        }
 
-                    Add(bar);
+                        Add(bar);
+                    }
+                    catch(Exception e)
+                    {
+                        l.Error("Ошибка при парсинге строки " + line + " " + e);
+                    }
                 }
             }
             else
             {
-                //TODO Неверный фармат 
+                l.Error("Неверный формат csv файла "+line);
             }
 
         }
@@ -428,7 +457,11 @@ namespace owp.FDownloader
         // освобождаю память
         public void Clear()
         {
+            l.Debug("Clear");
             list.Clear();
         }
+
     }
+
+
 }
