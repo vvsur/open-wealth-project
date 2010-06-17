@@ -207,7 +207,7 @@ namespace owp.FDownloader
                                     File.WriteAllText(Path.Combine(dir, fileName + ".csv"), csv);
                                 }
                             }
-                            System.Threading.Thread.Sleep(500); // иначе интерфейс виснит
+                            System.Threading.Thread.Sleep(random.Next(1000)); // дадим интерфейсу отрисоваться, а финуму отдохнуть
                         }
                         // восстанавлию, сбитые скачиванием по дням настройки
                         settings.from = from;
@@ -254,7 +254,7 @@ namespace owp.FDownloader
                                     );
                     }
                     bars.Clear();
-                    System.Threading.Thread.Sleep(500); // иначе интерфейс виснит
+                    System.Threading.Thread.Sleep(random.Next(1000)); // дадим интерфейсу отрисоваться, а финуму отдохнуть
                 }
             backgroundWorker.ReportProgress(100, "Всё!!!");
             l.Info("backgroundWorker_DoWork закончил");
@@ -280,16 +280,22 @@ namespace owp.FDownloader
                     }
         }
 
+        private StringBuilder sb = new StringBuilder(11000);
+
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+
             if (!String.IsNullOrEmpty((e.UserState as string)))
             {
-                // TODO сохранять в интерфейсе только последние N строк (для увелечения быстродействия)
-                textBox.Text += (e.UserState as string) + Environment.NewLine;
+                sb.AppendLine(e.UserState as string);
+                if (sb.Length > 10000)
+                    sb.Remove(0, sb.Length - 10000);
+
+                textBox.Text = sb.ToString();
+                textBox.SelectionStart = textBox.TextLength;
+                textBox.ScrollToCaret();
                 l.Debug("backgroundWorker_ProgressChanged " + (e.UserState as string));
             }
-            textBox.SelectionStart = textBox.TextLength;
-            textBox.ScrollToCaret(); 
             progressBar.Value = e.ProgressPercentage;
         }
 
