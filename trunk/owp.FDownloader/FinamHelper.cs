@@ -201,9 +201,22 @@ namespace owp.FDownloader
     {
         public int marketId = -1;
         public int id = -1;
-        public String marketName = String.Empty;
-        public String name = String.Empty;
-        public String code = String.Empty;
+        private string _marketName = String.Empty;
+        public string marketName 
+        {
+            get
+            {
+                if ((_marketName == "Фьючерсы ФОРТС") || (_marketName == "ФОРТС Архив"))
+                    return "ФОРТС";
+                return _marketName;
+            }
+            set
+            {
+                _marketName = value;
+            }
+        }
+        public string name = String.Empty;
+        public string code = String.Empty;
         public bool checed = false;
 
         public EmitentInfo() { } // требуется для сериализации
@@ -245,8 +258,8 @@ namespace owp.FDownloader
         //public DateTime from { get; set; }
         //public DateTime to { get; set; }
 
-        public Bar this[int i] { get { return list[i]; } }
-        public int Count { get { return list.Count ; } }
+        public Bar this[int i] { get { if (list != null) return list[i]; return null; } }
+        public int Count { get { if (list != null) return list.Count; return 0; } }
         public DateTime Last { get { if (Count > 0) return list[Count - 1].dt; else return DateTime.Today.AddDays(-1); } }
 
         public Bars(EmitentInfo emitent)
@@ -260,7 +273,7 @@ namespace owp.FDownloader
         /// <param name="fileName">Имя WL файла</param>
         public void Save(string fileName)
         {
-            if (list.Count == 0)
+            if (Count == 0)
             {
                 l.Debug("Не сохраняю bars т.к. list.Count == 0");
                 return;
@@ -271,8 +284,8 @@ namespace owp.FDownloader
 
             BinaryWriter wlFile = new BinaryWriter(File.Open(fileName,FileMode.Create,FileAccess.Write));
 
-            wlFile.Write(list.Count);
-            for (int bar = 0; bar < list.Count; bar++)
+            wlFile.Write(Count);
+            for (int bar = 0; bar < Count; bar++)
             {
                 {
                     wlFile.Write((double)list[bar].dt.ToOADate());
@@ -288,7 +301,7 @@ namespace owp.FDownloader
 
         public void SaveCSV(string fileName)
         {
-            if (list.Count == 0)
+            if (Count == 0)
             {
                 l.Debug("Не сохраняю bars т.к. list.Count == 0");
                 return;
@@ -353,6 +366,8 @@ namespace owp.FDownloader
         private void Add(Bar bar)
         {
             l.Debug("Добавляю bar");
+            if (list == null) 
+                list = new List<Bar>();
             if (list.Count == 0)
             {
                 list.Add(bar);
@@ -458,7 +473,7 @@ namespace owp.FDownloader
         public void Clear()
         {
             l.Debug("Clear");
-            list.Clear();
+            list = null;
         }
 
     }

@@ -207,7 +207,7 @@ namespace owp.FDownloader
                                     File.WriteAllText(Path.Combine(dir, fileName + ".csv"), csv);
                                 }
                             }
-                            System.Threading.Thread.Sleep(random.Next(1000)); // дадим интерфейсу отрисоваться, а финуму отдохнуть
+                            System.Threading.Thread.Sleep(random.Next(500)); // дадим интерфейсу отрисоваться, а финуму отдохнуть
                         }
                         // восстанавлию, сбитые скачиванием по дням настройки
                         settings.from = from;
@@ -253,8 +253,13 @@ namespace owp.FDownloader
                                 VerifyFileName(bars.emitent.marketName) + '-' + bars.emitent.code + ".csv")
                                     );
                     }
-                    bars.Clear();
+
                     System.Threading.Thread.Sleep(random.Next(1000)); // дадим интерфейсу отрисоваться, а финуму отдохнуть
+
+                    // пытаюсь освободить память
+                    bars = null;
+                    listDownloads[i] = null;
+                    GC.Collect(); // а стоит ли оно того???
                 }
             backgroundWorker.ReportProgress(100, "Всё!!!");
             l.Info("backgroundWorker_DoWork закончил");
