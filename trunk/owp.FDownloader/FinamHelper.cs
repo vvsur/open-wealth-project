@@ -215,6 +215,13 @@ namespace owp.FDownloader
                 _marketName = value;
             }
         }
+        public string marketName4gui
+        {
+            get
+            {
+                return _marketName;
+            }
+        }
         public string name = String.Empty;
         public string code = String.Empty;
         public bool checed = false;

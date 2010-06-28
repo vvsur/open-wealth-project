@@ -144,8 +144,8 @@ namespace owp.FDownloader
                 // создаю секцию, если её ранее небыло
                 if (currentMarket == null)
                 {
-                    currentMarket = Nodes.Add(emitent.marketName);
-                    currentMarket.Tag = new EmitentInfo(emitent.marketId, emitent.marketName, -1, String.Empty, String.Empty);
+                    currentMarket = Nodes.Add(emitent.marketName4gui);
+                    currentMarket.Tag = new EmitentInfo(emitent.marketId, emitent.marketName4gui, -1, String.Empty, String.Empty);
                     AddEmitent(currentMarket, emitent);
                 }
             }
