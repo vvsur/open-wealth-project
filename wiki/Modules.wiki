@@ -92,5 +92,4 @@
 [https://spreadsheets.google.com/ccc?key=0Aqp1hwxgUHAgdFRuaHhNRVhiZ3lPWk5lMVRzbjE2R2c&hl=ru Таблица с описанием какой модуль, для каких функций нужен.] 
 
 === Идеи ===
-<wiki:gadget url="http://www.google.com/moderator/static/moderator-embed-gadget.xml" 
-height="400" width="900" up_url="http://www.google.com/moderator/#16/e=29e47" up_sort="HOT" up_hl="en" />
+http://www.google.com/moderator/#16/e=29e47
