@@ -1,4 +1,4 @@
-#summary Среда
+#summary Среда разработки
 
 = В чем =
 MS Visual Studio 2010
