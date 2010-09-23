@@ -58,6 +58,7 @@
     <Compile Include="Core\IScale.cs" />
     <Compile Include="Core\ISymbol.cs" />
     <Compile Include="Core\Simple\Log.cs" />
+    <Compile Include="Core\Simple\Tick.cs" />
     <Compile Include="Data\AggregateBar.cs" />
     <Compile Include="Core\Simple\Bar.cs" />
     <Compile Include="Data\AggregateBars.cs" />
