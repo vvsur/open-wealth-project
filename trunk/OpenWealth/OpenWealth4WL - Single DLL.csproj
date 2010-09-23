@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C7480EA6-E640-41B6-9E48-140CC2E0CD8E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenWealth</RootNamespace>
+    <AssemblyName>OpenWealth</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\Program Files\Fidelity Investments\Wealth-Lab Pro 5\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\Program Files\Fidelity Investments\Wealth-Lab Pro 5\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WealthLab">
+      <HintPath>..\..\..\Program Files\Fidelity Investments\Wealth-Lab Pro 5\WealthLab.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Core.cs" />
+    <Compile Include="Core\IBar.cs" />
+    <Compile Include="Core\IBars.cs" />
+    <Compile Include="Core\ILog.cs" />
+    <Compile Include="Core\IPlugin.cs" />
+    <Compile Include="Core\IScale.cs" />
+    <Compile Include="Core\ISymbol.cs" />
+    <Compile Include="Core\Simple\Log.cs" />
+    <Compile Include="Data\AggregateBar.cs" />
+    <Compile Include="Core\Simple\Bar.cs" />
+    <Compile Include="Data\AggregateBars.cs" />
+    <Compile Include="Data\BarEnum.cs" />
+    <Compile Include="Data\Ticks.cs" />
+    <Compile Include="Data\Data.cs" />
+    <Compile Include="Data\Scale.cs" />
+    <Compile Include="Core\IData.cs" />
+    <Compile Include="Data\Symbol.cs" />
+    <Compile Include="Interface\MainForm4WL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\MainForm4WL.Designer.cs">
+      <DependentUpon>MainForm4WL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WLProvider\Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RndDataSource\HandTickForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RndDataSource\HandTickForm.Designer.cs">
+      <DependentUpon>HandTickForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RndDataSource\RndDataSource.cs" />
+    <Compile Include="RndDataSource\TimerSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RndDataSource\TimerSettingForm.Designer.cs">
+      <DependentUpon>TimerSettingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WLProvider\StreamingProvider.cs" />
+    <Compile Include="WLProvider\WizardPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WLProvider\WizardPage.Designer.cs">
+      <DependentUpon>WizardPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WLProvider\StaticProvider.cs" />
+    <Compile Include="Core\Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Interface\MainForm4WL.resx">
+      <DependentUpon>MainForm4WL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WLProvider\Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RndDataSource\HandTickForm.resx">
+      <DependentUpon>HandTickForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RndDataSource\TimerSettingForm.resx">
+      <DependentUpon>TimerSettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WLProvider\WizardPage.resx">
+      <DependentUpon>WizardPage.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\Resources\Image1.bmp" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
