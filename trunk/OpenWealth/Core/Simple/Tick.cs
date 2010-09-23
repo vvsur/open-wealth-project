@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OpenWealth.Core.Simple
+namespace OpenWealth.Simple
 {
     public class Tick : IBar
     {

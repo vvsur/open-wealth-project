@@ -28,14 +28,14 @@ namespace OpenWealth.RndDataSource
         {
             if (data != null)
             {
-                Simple.Bar tick = null;
+                IBar tick = null;
                 try
                 {
                     int number = int.Parse(textBox2.Text);
                     double price = double.Parse(textBox3.Text);
                     int volume = int.Parse(textBox4.Text);
 
-                    tick = new Simple.Bar(dateTimePicker1.Value, number, price, price, price, price, volume);
+                    tick = new Simple.Tick(dateTimePicker1.Value, number, price, volume);
                 }
                 catch
                 {

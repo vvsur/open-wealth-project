@@ -86,6 +86,7 @@ namespace OpenWealth.WLProvider
         {
             get
             {
+                l.Debug("CanModifySymbols");
                 return true;
             }
         }
@@ -95,6 +96,7 @@ namespace OpenWealth.WLProvider
         {
             get
             {
+                l.Debug("CanDeleteSymbolDataFile");
                 return true;
             }
         }
@@ -104,7 +106,8 @@ namespace OpenWealth.WLProvider
         {
             get
             {
-                return false;
+                l.Debug("CanRequestUpdates");
+                return true;
             }
         }
 
@@ -112,6 +115,7 @@ namespace OpenWealth.WLProvider
         // Вызывается, когда меняешь таймфрэйм через интерфейс у существующего символа
         public override bool SupportsDynamicUpdate(BarScale scale)
         {
+            l.Debug("SupportsDynamicUpdate");
             return true;
         }
 
@@ -120,6 +124,7 @@ namespace OpenWealth.WLProvider
         {
             get
             {
+                l.Debug("SupportsDataSourceUpdate");
                 return true;
             }
         }
@@ -129,6 +134,7 @@ namespace OpenWealth.WLProvider
         {
             get
             {
+                l.Debug("SupportsProviderUpdate");
                 return true;
             }
         }

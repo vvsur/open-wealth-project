@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenWealth.Data
 {
-    public class Data : IData, IPlugin
+    public class Data : IData, IPlugin, IDescription
     {
         public Data()
         {
@@ -76,11 +76,14 @@ namespace OpenWealth.Data
         #region Реализация интерфейса IPlugin
 
         public void Init() { } // всё что нужно, сделано в конструкторе
-
-        public string name { get { return "Модуль Данные"; } }
-
-        public bool isDataSource { get { return false; } }
         
         #endregion Реализация интерфейса IPlugin
+
+        #region Реализация интерфейса IDescription
+        public string Name { get { return "Модуль Данные"; } }
+        public string Description { get { return "Получает данные от провайдеров и отдает желающим. Не сохраняет данные."; } }
+        public string URL { get { return "www.OpenWealth.ru"; } }
+        #endregion Реализация интерфейса IDescription
+
     }
 }

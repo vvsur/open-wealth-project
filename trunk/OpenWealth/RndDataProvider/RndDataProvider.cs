@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace OpenWealth.RndDataSource
 {
-    public class RndDataSource : IPlugin
+    public class RndDataProvider : IPlugin, IDataProvider, IDescription
     {
-        static ILog l = Core.GetLogger(typeof(RndDataSource).FullName);
+        static ILog l = Core.GetLogger(typeof(RndDataProvider).FullName);
 
         IBars AAA, BBB;
         double aaa, bbb;
@@ -85,19 +85,34 @@ namespace OpenWealth.RndDataSource
             }
         }
 
-        public string name { get { return "RndDataSource"; } }
-        public bool isDataSource { get { return true; } }
-
         #endregion реализация IPlugin
-        
+
         void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             aaa += rnd.NextDouble() - 0.5;
             bbb += 2*rnd.NextDouble() - 1;
 
             l.Debug("RndDataSource создаю и добавляю новые бары. m_TickNum=" + m_TickNum);
-            AAA.Add(this, new OpenWealth.Simple.Bar(DateTime.Now, ++m_TickNum, aaa, aaa, aaa, aaa, rnd.Next(20)));
-            BBB.Add(this, new OpenWealth.Simple.Bar(DateTime.Now, ++m_TickNum, bbb, bbb, bbb, bbb, rnd.Next(20)));
+            AAA.Add(this, new OpenWealth.Simple.Tick(DateTime.Now, ++m_TickNum, aaa, rnd.Next(20)));
+            BBB.Add(this, new OpenWealth.Simple.Tick(DateTime.Now, ++m_TickNum, bbb, rnd.Next(20)));
         }
+
+        #region IDataProvider
+        public bool isHistoryProvider { get { return false; } }
+        public bool isRealTimeProvider { get { return true; } }
+        public bool GetData(ISymbol symbol, IScale scale, DateTime startDate, DateTime endDate, int maxBars, bool includePartialBar)
+        {
+            l.Error("Для провайдера не реализуещего isHistoryProvider данный метод вызываться не должен");
+            return false;
+        }
+        #endregion IDataProvider
+
+        #region IDescription
+        public string Name { get { return "RndDataSource"; } }
+        public string Description { get { return "Генератор случайных тиков"; } }
+        public string URL { get { return "www.OpenWealth.ru"; } }
+        #endregion IDescription
+
+
     }
 }

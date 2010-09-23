@@ -53,9 +53,12 @@
     <Compile Include="Core\Core.cs" />
     <Compile Include="Core\IBar.cs" />
     <Compile Include="Core\IBars.cs" />
+    <Compile Include="Core\IDataProvider.cs" />
+    <Compile Include="Core\IDescription.cs" />
     <Compile Include="Core\ILog.cs" />
     <Compile Include="Core\IPlugin.cs" />
     <Compile Include="Core\IScale.cs" />
+    <Compile Include="Core\ISettingsHost.cs" />
     <Compile Include="Core\ISymbol.cs" />
     <Compile Include="Core\Simple\Log.cs" />
     <Compile Include="Core\Simple\Tick.cs" />
@@ -74,22 +77,23 @@
     <Compile Include="Interface\MainForm4WL.Designer.cs">
       <DependentUpon>MainForm4WL.cs</DependentUpon>
     </Compile>
+    <Compile Include="WLProvider\Plugin.cs" />
     <Compile Include="WLProvider\Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RndDataSource\HandTickForm.cs">
+    <Compile Include="RndDataProvider\HandTickForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RndDataSource\HandTickForm.Designer.cs">
+    <Compile Include="RndDataProvider\HandTickForm.Designer.cs">
       <DependentUpon>HandTickForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="RndDataSource\RndDataSource.cs" />
-    <Compile Include="RndDataSource\TimerSettingForm.cs">
+    <Compile Include="RndDataProvider\RndDataProvider.cs" />
+    <Compile Include="RndDataProvider\TimerSettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RndDataSource\TimerSettingForm.Designer.cs">
+    <Compile Include="RndDataProvider\TimerSettingForm.Designer.cs">
       <DependentUpon>TimerSettingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="WLProvider\StreamingProvider.cs" />
@@ -110,10 +114,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="RndDataSource\HandTickForm.resx">
+    <EmbeddedResource Include="RndDataProvider\HandTickForm.resx">
       <DependentUpon>HandTickForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="RndDataSource\TimerSettingForm.resx">
+    <EmbeddedResource Include="RndDataProvider\TimerSettingForm.resx">
       <DependentUpon>TimerSettingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WLProvider\WizardPage.resx">

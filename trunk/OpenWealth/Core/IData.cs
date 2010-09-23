@@ -6,6 +6,8 @@ namespace OpenWealth
 {
     public interface IData
     {
+        //TODO как регистрируются провайдеры данных? 
+
         //TODO IBars Get(ISymbol symbol, IScale scale, DateTime from, DateTime to, int maxCount);
         //TODO IBars Get(ISymbol symbol, IScale scale, int count);
         IBars GetBars(ISymbol symbol, IScale scale);

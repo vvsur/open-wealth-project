@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace OpenWealth.Interface
 {
-    public partial class MainForm4WL : Form, IPlugin
+    public partial class MainForm4WL : Form, IPlugin, IDescription
     {
         public MainForm4WL()
         {
@@ -13,6 +13,7 @@ namespace OpenWealth.Interface
             Core.SetGlobal("MainMenu", this.menuStrip);
 
             // TODO Указать в качестве родителя главное окно WL
+            Name = "Главная форма";
         }
 
         public void Init()
@@ -20,8 +21,13 @@ namespace OpenWealth.Interface
             //Show();
         }
 
-        public bool isDataSource { get { return false; } }
-        public string name { get { return "Главная форма при интеграции с WL"; } }
+        #region Реализация IDescription
+
+        //public string Name { get { return "Главная форма"; } }
+        public string Description { get { return "Главная форма приложения"; } }
+        public string URL { get { return "www.OpenWealth.ru"; } }
+
+        #endregion Реализация IDescription
 
         private void MainForm4WL_Resize(object sender, EventArgs e)
         {
