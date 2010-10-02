@@ -1,7 +1,7 @@
 ﻿
 namespace OpenWealth
 {
-    interface IDescription
+    public interface IDescription
     {
         string Name { get; }
         string Description { get; }

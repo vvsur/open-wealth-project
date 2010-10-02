@@ -15,6 +15,6 @@ namespace OpenWealth
         int volume { get; }
         IDictionary<string, Object> ext { get; }
 
-        System.Threading.ReaderWriterLockSlim Lock { get; }
+        System.Threading.ReaderWriterLock Lock { get; }
     }
 }

@@ -14,21 +14,6 @@ namespace OpenWealth.WLProvider
 
         public StreamingProvider()
         {
-            // инициализация ядра и плагинов
-            l.Debug("StreamingProvider()");
-            if (Core.SingleInit())
-            {
-                Core.Init(
-                    System.IO.Path.Combine(
-                        System.IO.Path.GetDirectoryName(
-                            System.Reflection.Assembly.GetExecutingAssembly().Location
-                                                       )
-                        , "OWPlugin")
-                      );
-                Core.LoadPlugin(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                Core.LoadPlugin();
-                Core.InitPlugin();
-            }
             this.data = Core.GetGlobal("data") as IData;
             if (this.data == null)
                 throw new Exception("Не найден модуль data");

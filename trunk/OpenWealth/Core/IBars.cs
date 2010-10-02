@@ -15,7 +15,7 @@ namespace OpenWealth
         IBar this[int i] { get; }
         int Count { get; }
 
-        System.Threading.ReaderWriterLockSlim Lock { get; }
+        System.Threading.ReaderWriterLock Lock { get; }
 
         event EventHandler<BarsEventArgs> NewBarEvent;
         event EventHandler<BarsEventArgs> ChangeBarEvent;

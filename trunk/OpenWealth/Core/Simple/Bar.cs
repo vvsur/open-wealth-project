@@ -28,8 +28,8 @@ namespace OpenWealth.Simple
             ext = new Dictionary<string, Object>();
         }
         #region Lock
-        System.Threading.ReaderWriterLockSlim m_lock = new System.Threading.ReaderWriterLockSlim();
-        public System.Threading.ReaderWriterLockSlim Lock { get { return m_lock; } }
+        System.Threading.ReaderWriterLock m_lock = new System.Threading.ReaderWriterLock();
+        public System.Threading.ReaderWriterLock Lock { get { return m_lock; } }
         #endregion Lock
     }
 }

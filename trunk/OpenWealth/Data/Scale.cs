@@ -8,7 +8,7 @@ namespace OpenWealth.Data
     // TODO выделить интерфейс IScale и завязать всё на него, а не на класс
     public class Scale: IScale
     {
-        static readonly log4net.ILog l = log4net.LogManager.GetLogger(typeof(Scale));
+        static readonly ILog l = Core.GetLogger(typeof(Scale).FullName);
 
         public ScaleEnum scaleType {get; private set;}
         public int interval { get; private set; }

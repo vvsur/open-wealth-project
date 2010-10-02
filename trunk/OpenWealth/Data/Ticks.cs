@@ -25,7 +25,7 @@ namespace OpenWealth.Data
         {
             l.Debug("Новый бар " + bar.number);
 
-            Lock.EnterWriteLock();
+            Lock.AcquireWriterLock(1000);
             try
             {
                 if ((m_LastBar == null) || (m_LastBar.number < bar.number))
@@ -47,7 +47,7 @@ namespace OpenWealth.Data
             }
             finally
             {
-                Lock.ExitWriteLock();
+                Lock.ReleaseWriterLock();
             }
 
             EventHandler<BarsEventArgs> e = NewBarEvent;
@@ -98,8 +98,8 @@ namespace OpenWealth.Data
         public event EventHandler<BarsEventArgs> ChangeBarEvent;
 
         #region Lock
-        System.Threading.ReaderWriterLockSlim m_lock = new System.Threading.ReaderWriterLockSlim();
-        public System.Threading.ReaderWriterLockSlim Lock { get { return m_lock; } }
+        System.Threading.ReaderWriterLock m_lock = new System.Threading.ReaderWriterLock();
+        public System.Threading.ReaderWriterLock Lock { get { return m_lock; } }
         #endregion Lock
 
     }

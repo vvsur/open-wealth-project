@@ -6,39 +6,48 @@ using System.Diagnostics;
 
 namespace OpenWealth
 {
+    //TODO использовать WCF ?
     public sealed class Core
     {
+        static System.Threading.ReaderWriterLock Lock = new System.Threading.ReaderWriterLock();
+
+        #region Init
         // публичный конструктор запрещаем. Ядро имеет только статические методы
         Core() { }
 
-        static System.Threading.ReaderWriterLockSlim Lock = new System.Threading.ReaderWriterLockSlim();
+        /// <summary>
+        /// Статический конструктор, инициирующий Core
+        /// </summary>
+        static Core()
+        {   
+            l.Debug("Статический конструктор Core.");
+            string appFileName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string appFilePath = System.IO.Path.GetDirectoryName(appFileName);
+            string pluginsPath1 = System.IO.Path.Combine(appFilePath,"OpenWealth");
+            string pluginsPath2 = System.IO.Path.Combine(appFilePath,"Plugins");
 
-        #region Init
+            SetGlobal("AppPath", appFilePath);
 
-        static bool m_SingleInit = true;
-        static public bool SingleInit()
-        {
-            Lock.EnterWriteLock();
-            try
+            LoadPlugin(appFileName);
+
+            if (Directory.Exists(pluginsPath1))
             {
-                l.Debug("Core.SingleInit");
-                bool result = m_SingleInit;
-                m_SingleInit = false;
-                return result;
+                SetGlobal("PluginsPath", pluginsPath1);
+                foreach (string file in Directory.GetFiles(pluginsPath1, "*.dll", SearchOption.AllDirectories))
+                    LoadPlugin(file);
             }
-            finally
-            {
-                Lock.ExitWriteLock();
-            }
+            else 
+                if (Directory.Exists(pluginsPath2))
+                {
+                    SetGlobal("PluginsPath", pluginsPath2);
+                    foreach (string file in Directory.GetFiles(pluginsPath2, "*.dll", SearchOption.AllDirectories))
+                        LoadPlugin(file);
+                }
+
+            InitPlugins();
         }
 
-        static public void Init(string AppPath)
-        {
-            l.Debug("инициирую Core");
-            SetGlobal("AppPath", AppPath);
-        }
-
-        static public void InitPlugin()
+        static void InitPlugins()
         {
             l.Debug("Получаю список ранее загруженных плагинов");
             List<IPlugin> plugins = GetGlobal("plugins") as List<IPlugin>;
@@ -46,7 +55,7 @@ namespace OpenWealth
                 p.Init();
         }
 
-        static public void LoadPlugin(Type type)
+        static void LoadPlugin(Type type)
         {
             l.Debug("Получаю список ранее загруженных плагинов");
             List<IPlugin> plugins = GetGlobal("plugins") as List<IPlugin>;
@@ -83,7 +92,7 @@ namespace OpenWealth
             }
         }
 
-        static public void LoadPlugin(string file)
+        static void LoadPlugin(string file)
         {
             // загружаю список плагинов из файла
             try
@@ -105,16 +114,6 @@ namespace OpenWealth
             }
         }
 
-        static public void LoadPlugin()
-        {            
-            string folder = GetGlobal("AppPath") as string;
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-            if (folder != null)
-                foreach (string file in Directory.GetFiles(folder, "*.dll", SearchOption.AllDirectories))
-                    LoadPlugin(file);
-        }
-
         #endregion Init
 
         #region SetGlobal GetGlobal
@@ -123,28 +122,28 @@ namespace OpenWealth
         public static void SetGlobal(string key, object obj)
         {
             l.Debug("Сохранил в global " + key);
-            Lock.EnterWriteLock();
+            Lock.AcquireWriterLock(1000);
             try
             {
                 global[key.ToLower()] = obj;
             }
             finally
             {
-                Lock.ExitWriteLock();
+                Lock.ReleaseWriterLock();
             }
         }
         public static object GetGlobal(string key)
         {
             object result;
             bool getResult;
-            Lock.EnterReadLock();
+            Lock.AcquireReaderLock(1000);
             try
             {
                 getResult = global.TryGetValue(key.ToLower(), out result);
             }
             finally
             {
-                Lock.ExitReadLock();
+                Lock.ReleaseReaderLock();
             }
             if (getResult)
             {

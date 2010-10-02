@@ -23,7 +23,7 @@ namespace OpenWealth.Data
             this.symbol = symbol;
             this.scale = scale;
             m_TickBars = data.GetBars(symbol, data.GetScale(ScaleEnum.tick, 1));
-            m_TickBars.Lock.EnterReadLock();
+            m_TickBars.Lock.AcquireReaderLock(1000);
             try
             {
                 foreach (IBar bar in m_TickBars)
@@ -33,7 +33,7 @@ namespace OpenWealth.Data
             }
             finally
             {
-                m_TickBars.Lock.ExitReadLock();
+                m_TickBars.Lock.ReleaseReaderLock();
             }
         }        
 
@@ -55,8 +55,8 @@ namespace OpenWealth.Data
 
         public IBar FindBar(DateTime dt)
         {
-            if (!Lock.IsWriteLockHeld)
-                Lock.EnterReadLock();
+            if (!Lock.IsWriterLockHeld)
+                Lock.AcquireReaderLock(1000);
             try
             {
                 DateTime alignmentDT = TimeAlignment(dt);
@@ -71,8 +71,8 @@ namespace OpenWealth.Data
             }
             finally
             {
-                if (!Lock.IsWriteLockHeld)
-                    Lock.ExitReadLock();
+                if (!Lock.IsWriterLockHeld)
+                    Lock.ReleaseReaderLock();
             }
         }
 
@@ -81,7 +81,7 @@ namespace OpenWealth.Data
         void m_TickBars_NewBarEvent(object sender, BarsEventArgs e) // TODO возможная оптимизация (слишком часто вызываю TimeAlignment(e.bar.dt))
         {
             l.Debug("m_TickBars_NewBarEvent новый тик " + e.bar.number);
-            Lock.EnterWriteLock();
+            Lock.AcquireWriterLock(1000);
             try
             {
                 if (m_LastTick == e.bar)
@@ -126,18 +126,18 @@ namespace OpenWealth.Data
             }
             finally
             {
-                Lock.ExitWriteLock();
+                Lock.ReleaseWriterLock();
             }
         }
 
         void RecalcBar(AggregateBar bar)
         {
             l.Debug("!!!!!!!!!!!!!!!!!     RecalcBar " + bar.number.ToString());
-            bar.Lock.EnterWriteLock();
+            bar.Lock.AcquireWriterLock(1000);
             try
             {
                 bar.Clear();
-                m_TickBars.Lock.EnterReadLock();
+                m_TickBars.Lock.AcquireReaderLock(1000);
                 try
                 {
                     foreach (IBar tick in m_TickBars)
@@ -146,12 +146,12 @@ namespace OpenWealth.Data
                 }
                 finally
                 {
-                    m_TickBars.Lock.ExitReadLock();
+                    m_TickBars.Lock.ReleaseReaderLock();
                 }
             }
             finally
             {
-                bar.Lock.ExitWriteLock();
+                bar.Lock.ReleaseWriterLock();
             }
         }
 
@@ -165,14 +165,14 @@ namespace OpenWealth.Data
 
         public void Add(IPlugin system, IBar bar)
         {
-            Lock.EnterWriteLock();
+            Lock.AcquireWriterLock(1000);
             try
             {
                 m_bars.Add(bar);
             }
             finally
             {
-                Lock.ExitWriteLock();
+                Lock.ReleaseWriterLock();
             }
 
             EventHandler<BarsEventArgs> e = NewBarEvent;
@@ -208,8 +208,8 @@ namespace OpenWealth.Data
         }
 
         #region Lock
-        System.Threading.ReaderWriterLockSlim m_lock = new System.Threading.ReaderWriterLockSlim();
-        public System.Threading.ReaderWriterLockSlim Lock { get { return m_lock; } }       
+        System.Threading.ReaderWriterLock m_lock = new System.Threading.ReaderWriterLock();
+        public System.Threading.ReaderWriterLock Lock { get { return m_lock; } }       
         #endregion Lock
 
 

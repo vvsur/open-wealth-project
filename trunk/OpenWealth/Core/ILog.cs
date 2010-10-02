@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OpenWealth
 {
@@ -26,6 +23,8 @@ namespace OpenWealth
         bool IsWarnEnabled { get; }
         bool IsErrorEnabled { get; }
         bool IsFatalEnabled { get; }
+
+        event LogEventHandler LogEvent;
     }
 
     public interface ILogManager
@@ -33,7 +32,20 @@ namespace OpenWealth
         ILog GetLogger(String name);
         void SetLevel(LogLevel level);
     }
+
+    public class LogEventArgs
+    {
+        public LogEventArgs(DateTime dt,string logName, string message, LogLevel level)
+        {
+            this.dt = dt;
+            this.logName = logName;
+            this.level = level;
+            this.message = message;
+        }
+        public DateTime dt { get; private set; }
+        public String logName { get; private set; }
+        public LogLevel level { get; private set; }
+        public String message { get; private set; }
+    }
+    public delegate void LogEventHandler(object sender, LogEventArgs e);
 }
-
-
-

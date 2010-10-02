@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenWealth</RootNamespace>
     <AssemblyName>OpenWealth</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -26,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\Program Files\Fidelity Investments\Wealth-Lab Pro 5\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,17 +36,14 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>References\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WealthLab">
-      <HintPath>..\..\..\Program Files\Fidelity Investments\Wealth-Lab Pro 5\WealthLab.dll</HintPath>
+    <Reference Include="WealthLab, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Program Files\Fidelity Investments\Wealth-Lab Pro 5\WealthLab.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -83,19 +80,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RndDataProvider\HandTickForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RndDataProvider\HandTickForm.Designer.cs">
-      <DependentUpon>HandTickForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RndDataProvider\RndDataProvider.cs" />
-    <Compile Include="RndDataProvider\TimerSettingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RndDataProvider\TimerSettingForm.Designer.cs">
-      <DependentUpon>TimerSettingForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="WLProvider\StreamingProvider.cs" />
     <Compile Include="WLProvider\WizardPage.cs">
       <SubType>UserControl</SubType>
@@ -113,12 +97,6 @@
     <EmbeddedResource Include="WLProvider\Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RndDataProvider\HandTickForm.resx">
-      <DependentUpon>HandTickForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RndDataProvider\TimerSettingForm.resx">
-      <DependentUpon>TimerSettingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WLProvider\WizardPage.resx">
       <DependentUpon>WizardPage.cs</DependentUpon>

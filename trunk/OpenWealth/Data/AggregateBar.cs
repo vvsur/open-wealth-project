@@ -12,7 +12,7 @@ namespace OpenWealth.Data
         public void AddTick(IBar tick)
         {
             l.Debug("AggregateBars.AddTick Добавляю тик " + tick.number);
-            Lock.EnterWriteLock();
+            Lock.AcquireWriterLock(1000);
             try
             {
                 if (Double.IsNaN(open))
@@ -34,7 +34,7 @@ namespace OpenWealth.Data
             }
             finally
             {
-                Lock.ExitWriteLock();
+                Lock.ReleaseWriterLock();
             }
         }
 
