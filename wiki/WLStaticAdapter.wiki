@@ -1,5 +1,7 @@
 #summary Загружает исторические (статические) данные из модуля "Хранение данных" в WL
 
+=== Информация устарела. Свежая информация на [http://openwealth.ru сайте проекта OpenWealth] ===
+
 = Introduction =
 
 Add your content here.
