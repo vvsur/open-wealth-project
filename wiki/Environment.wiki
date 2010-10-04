@@ -1,5 +1,7 @@
 #summary Среда разработки
 
+=== Информация устарела. Свежая информация на [http://openwealth.ru сайте проекта OpenWealth] ===
+
 = В чем =
 MS Visual Studio 2010
 
