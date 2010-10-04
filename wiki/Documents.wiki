@@ -1,5 +1,7 @@
 #summary One-sentence summary of this page.
 
+=== Информация устарела. Свежая информация на [http://openwealth.ru сайте проекта OpenWealth] ===
+
 = Introduction =
 
 Add your content here.
