@@ -1,7 +1,7 @@
 #summary Заглушка, позволяющая запускать Wealth Lab робота из под Quik без Wealth Lab
 #labels Featured
 
-=== Знающим C# [http://code.google.com/p/open-wealth-project/wiki/Why читать здесь] ===
+=== Информация устарела. Свежая информация на [http://openwealth.ru сайте проекта OpenWealth] ===
 
 = Введение =
 
