@@ -14,6 +14,9 @@ namespace OpenWealth
         int Get(string key, int defaultValue);
         void Set(string key, int value);
 
+        double Get(string key, double defaultValue);
+        void Set(string key, double value);
+
         void DeleteKey(string key);
     }
 }

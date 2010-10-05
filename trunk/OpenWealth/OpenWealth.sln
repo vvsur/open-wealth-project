@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWealth4WL - Single DLL", "OpenWealth4WL - Single DLL.csproj", "{C7480EA6-E640-41B6-9E48-140CC2E0CD8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTest", "Data\DataTest\DataTest.csproj", "{83054249-ECBB-4BDA-8DF4-23A85D5AE08B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{88BDEA84-00DF-4873-8A37-9FFE6C74D173}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		OpenWealth.vsmdi = OpenWealth.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = OpenWealth.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7480EA6-E640-41B6-9E48-140CC2E0CD8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7480EA6-E640-41B6-9E48-140CC2E0CD8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7480EA6-E640-41B6-9E48-140CC2E0CD8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7480EA6-E640-41B6-9E48-140CC2E0CD8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83054249-ECBB-4BDA-8DF4-23A85D5AE08B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83054249-ECBB-4BDA-8DF4-23A85D5AE08B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83054249-ECBB-4BDA-8DF4-23A85D5AE08B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83054249-ECBB-4BDA-8DF4-23A85D5AE08B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

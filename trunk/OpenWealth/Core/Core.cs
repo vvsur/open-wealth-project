@@ -6,7 +6,6 @@ using System.Diagnostics;
 
 namespace OpenWealth
 {
-    //TODO использовать WCF ?
     public sealed class Core
     {
         static System.Threading.ReaderWriterLock Lock = new System.Threading.ReaderWriterLock();

@@ -22,6 +22,24 @@ namespace DevTools.LogForm
             l.Debug("LogForm()");
         }
 
+        public void Init()
+        {
+            l.Debug("Инициирую");
+
+            mainForm = Core.GetGlobal("MainForm") as Form;
+            menuStrip = Core.GetGlobal("MainMenu") as MenuStrip;
+
+            this.MdiParent = mainForm;
+
+            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem("Логи");
+            ToolStripDropDown toolStripDropDown = new ToolStripDropDown();
+            ToolStripItem item1 = new ToolStripButton("Отобразить лог");
+            item1.Click += new EventHandler(item1_Click);
+            toolStripDropDown.Items.Add(item1);
+            toolStripMenuItem.DropDown = toolStripDropDown;
+            menuStrip.Items.Add(toolStripMenuItem);
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             listBox1.Items.Clear();
@@ -39,22 +57,6 @@ namespace DevTools.LogForm
 
         Form mainForm;
         MenuStrip menuStrip;
-
-        public void Init()
-        {
-            l.Debug("Инициирую");
-
-            mainForm = Core.GetGlobal("MainForm") as Form;
-            menuStrip = Core.GetGlobal("MainMenu") as MenuStrip;
-
-            ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem("Логи");
-            ToolStripDropDown toolStripDropDown = new ToolStripDropDown();
-            ToolStripItem item1 = new ToolStripButton("Отобразить лог");
-            item1.Click += new EventHandler(item1_Click);
-            toolStripDropDown.Items.Add(item1);
-            toolStripMenuItem.DropDown = toolStripDropDown;
-            menuStrip.Items.Add(toolStripMenuItem);
-        }
 
         void item1_Click(object sender, EventArgs e)
         {

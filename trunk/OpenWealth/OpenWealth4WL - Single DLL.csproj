@@ -26,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>..\..\Program Files\Fidelity Investments\Wealth-Lab Pro 5\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,6 +36,10 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fidelity.Components, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Program Files\Fidelity Investments\Wealth-Lab Pro 5\Fidelity.Components.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -57,7 +61,9 @@
     <Compile Include="Core\IScale.cs" />
     <Compile Include="Core\ISettingsHost.cs" />
     <Compile Include="Core\ISymbol.cs" />
+    <Compile Include="Core\Simple\SerializableDictionary.cs" />
     <Compile Include="Core\Simple\Log.cs" />
+    <Compile Include="Core\Simple\SettingsHost.cs" />
     <Compile Include="Core\Simple\Tick.cs" />
     <Compile Include="Data\AggregateBar.cs" />
     <Compile Include="Core\Simple\Bar.cs" />
@@ -73,6 +79,13 @@
     </Compile>
     <Compile Include="Interface\MainForm4WL.Designer.cs">
       <DependentUpon>MainForm4WL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WLProvider\Commissions\OpenWealthCommissions.cs" />
+    <Compile Include="WLProvider\Commissions\CommissionsUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WLProvider\Commissions\CommissionsUserControl.designer.cs">
+      <DependentUpon>CommissionsUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="WLProvider\Plugin.cs" />
     <Compile Include="WLProvider\Properties\Resources.Designer.cs">
@@ -93,6 +106,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Interface\MainForm4WL.resx">
       <DependentUpon>MainForm4WL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WLProvider\Commissions\CommissionsUserControl.resx">
+      <DependentUpon>CommissionsUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WLProvider\Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
