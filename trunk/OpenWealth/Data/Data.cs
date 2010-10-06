@@ -6,6 +6,8 @@ namespace OpenWealth.Data
 {
     public class Data : IData, IPlugin, IDescription
     {
+        static ILog l = Core.GetLogger(typeof(Data).FullName);
+
         public Data()
         {
             _symbols = new List<ISymbol>();
@@ -19,6 +21,23 @@ namespace OpenWealth.Data
 
         //public IBars Get(ISymbol symbol, IScale scale, DateTime from, DateTime to, int maxCount);
         //public IBars Get(ISymbol symbol, IScale scale, int count);
+
+        List<IMarket> markets = new List<IMarket>();
+        public IMarket GetMarket(string name)
+        {
+            lock (markets)
+            {
+                foreach (IMarket m in markets)
+                    if (m.Name == name)
+                        return m;
+
+                IMarket market = new Market(name);
+                markets.Add(market);
+                return market;
+            }
+        }
+
+        public IEnumerable<IMarket> Markets { get { return markets; } }
 
         List<IBars> barss = new List<IBars>();
         public IBars GetBars(ISymbol symbol, IScale scale)
@@ -40,21 +59,32 @@ namespace OpenWealth.Data
             }
         }
 
-        public IBars GetBars(string symbol, ScaleEnum scale, int interval)
+        public IBars GetBars(string marketName, string symbol, ScaleEnum scale, int interval)
         {
-            return GetBars(GetSymbol(symbol), GetScale(scale, interval));
+            return GetBars(GetSymbol(marketName, symbol), GetScale(scale, interval));
         }
 
         List<ISymbol> _symbols;
-        public IEnumerable<ISymbol> symbols { get { return _symbols; } }
-        public ISymbol GetSymbol(string name)
+        public IEnumerable<ISymbol> Symbols { get { return _symbols; } }
+        public ISymbol GetSymbol(string marketName, string name)
         {
             foreach (ISymbol symbol in _symbols)
-                if (symbol.name == name)
+                if ((symbol.Name == name) && (symbol.Market.Name == marketName))
                     return symbol;
-            ISymbol newSymbol = new Symbol(name);
+            ISymbol newSymbol = new Symbol(GetMarket(marketName), name);
             _symbols.Add(newSymbol);
             return newSymbol;
+        }
+
+        public ISymbol GetSymbol(string marketNameDotName)
+        {
+            string[] split = marketNameDotName.Split('.');
+            if (split.Length != 2)
+            {
+                l.Error("Не могу распарсить название бумаги "+ marketNameDotName);
+                return null;
+            }
+            return GetSymbol(split[0], split[1]);
         }
 
         List<IScale> scales =new List<IScale>();

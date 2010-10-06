@@ -25,9 +25,9 @@ namespace OpenWealth.RndDataSource
                 IBar tick = null;
                 try
                 {
-                    int number = int.Parse(textBox2.Text);
-                    double price = double.Parse(textBox3.Text);
-                    int volume = int.Parse(textBox4.Text);
+                    int number = int.Parse(txtNumber.Text);
+                    double price = double.Parse(txtPrice.Text);
+                    int volume = int.Parse(txtVolume.Text);
 
                     tick = new Simple.Tick(dateTimePicker1.Value, number, price, volume);
                 }
@@ -37,7 +37,7 @@ namespace OpenWealth.RndDataSource
                 }
                 if (tick != null)
                 {
-                    IBars bars = data.GetBars(textBox1.Text, ScaleEnum.tick, 1);
+                    IBars bars = data.GetBars(txtMarket.Text, txtSymbol.Text, ScaleEnum.tick, 1);
                     bars.Add(plugin, tick);
                 }
             }

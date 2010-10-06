@@ -52,12 +52,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Core.cs" />
+    <Compile Include="Core\IAccount.cs" />
     <Compile Include="Core\IBar.cs" />
     <Compile Include="Core\IBars.cs" />
     <Compile Include="Core\IDataProvider.cs" />
     <Compile Include="Core\IDescription.cs" />
     <Compile Include="Core\ILog.cs" />
+    <Compile Include="Core\IMarket.cs" />
+    <Compile Include="Core\IDeal.cs" />
+    <Compile Include="Core\IOrder.cs" />
     <Compile Include="Core\IPlugin.cs" />
+    <Compile Include="Core\IRequests.cs" />
+    <Compile Include="Core\IRobot.cs" />
     <Compile Include="Core\IScale.cs" />
     <Compile Include="Core\ISettingsHost.cs" />
     <Compile Include="Core\ISymbol.cs" />
@@ -69,6 +75,7 @@
     <Compile Include="Core\Simple\Bar.cs" />
     <Compile Include="Data\AggregateBars.cs" />
     <Compile Include="Data\BarEnum.cs" />
+    <Compile Include="Data\Market.cs" />
     <Compile Include="Data\Ticks.cs" />
     <Compile Include="Data\Data.cs" />
     <Compile Include="Data\Scale.cs" />
@@ -80,7 +87,7 @@
     <Compile Include="Interface\MainForm4WL.Designer.cs">
       <DependentUpon>MainForm4WL.cs</DependentUpon>
     </Compile>
-    <Compile Include="WLProvider\Commissions\OpenWealthCommissions.cs" />
+    <Compile Include="WLProvider\Commissions\Commissions.cs" />
     <Compile Include="WLProvider\Commissions\CommissionsUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

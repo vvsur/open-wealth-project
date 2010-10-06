@@ -16,7 +16,7 @@ namespace OpenWealth.Data
 
         public AggregateBars(IData data, ISymbol symbol, IScale scale)
         {
-            l.Debug("Создаем AggregateBars для " + symbol.name + " " + scale);
+            l.Debug("Создаем AggregateBars для " + symbol + " " + scale);
             if (scale.scaleType != ScaleEnum.sec)
                 throw new NotImplementedException("поддерживаются только ТАЙМ фреймы");
 

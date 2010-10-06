@@ -13,7 +13,7 @@ namespace OpenWealth.Data
         public IScale scale { get; protected set; }
         public Ticks(ISymbol symbol, IScale scale)
         {
-            l.Debug("Создаем Bars для " + symbol.name + " " + scale);
+            l.Debug("Создаем Bars для " + symbol + " " + scale);
             this.symbol = symbol;
             this.scale = scale;
         }

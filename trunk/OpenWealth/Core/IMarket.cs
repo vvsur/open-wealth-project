@@ -4,11 +4,9 @@ using System.Text;
 
 namespace OpenWealth
 {
-    public interface ISymbol
+    public interface IMarket
     {
         string Name { get; }
-        IMarket Market { get; }
         IDictionary<string, Object> Ext { get; }
-        string ToString();
     }
 }

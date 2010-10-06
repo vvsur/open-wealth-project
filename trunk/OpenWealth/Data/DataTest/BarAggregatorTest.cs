@@ -72,7 +72,7 @@ namespace DataTest
         public void TimeAlignmentTest()
         {
             IData data = new Data();
-            ISymbol symbol = new Symbol("test");
+            ISymbol symbol = new Symbol(data.GetMarket("testMarket"),"test");
 
             AggregateBars target1 = new AggregateBars(data, symbol,
                                                  new Scale(ScaleEnum.sec, 10));

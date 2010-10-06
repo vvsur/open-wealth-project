@@ -28,8 +28,8 @@ namespace OpenWealth.RndDataSource
 
             if (data != null)
             {
-                AAA = data.GetBars("AAA", ScaleEnum.tick, 1);
-                BBB = data.GetBars("BBB", ScaleEnum.tick, 1);
+                AAA = data.GetBars("TestMarket","AAA", ScaleEnum.tick, 1);
+                BBB = data.GetBars("TestMarket", "BBB", ScaleEnum.tick, 1);
                 aaa = 100;
                 bbb = 200;
                 timer = new System.Timers.Timer(100);
