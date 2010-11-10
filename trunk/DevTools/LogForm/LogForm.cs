@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
@@ -17,6 +13,10 @@ namespace DevTools.LogForm
         public LogForm()
         {
             InitializeComponent();
+
+            ILogManager lm = l as ILogManager;
+            if (lm != null)
+                lm.SetLevel(LogLevel.Debug);
 
             addListItem = new AddListItem(AddListItemMethod);
             l.LogEvent += new LogEventHandler(l_LogEvent);

@@ -4,8 +4,8 @@ namespace OpenWealth.Simple
 {
     public class Log : ILog, ILogManager
     {
-        private string name;
-        private int level;
+        string name;
+        static int level = 5; // по умолчанию логирование выключено, включается, например, при подключении DevTools
 
         public void Debug(object message)
         {
@@ -63,7 +63,6 @@ namespace OpenWealth.Simple
         internal Log(string name)
         {
             this.name = name;
-           // level = 5;
         }
         
         static event LogEventHandler staticLogEvent;
@@ -92,9 +91,9 @@ namespace OpenWealth.Simple
 
         #region Реализация интерфейса ILogManager
 
-        public void SetLevel(LogLevel level)
+        public void SetLevel(LogLevel newLogLevel)
         {
-            System.Threading.Interlocked.Exchange(ref this.level, (int)level);
+            System.Threading.Interlocked.Exchange(ref level, (int)newLogLevel);
         }
 
         public ILog GetLogger(string name)

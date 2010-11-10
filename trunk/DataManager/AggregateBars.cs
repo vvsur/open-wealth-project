@@ -14,14 +14,17 @@ namespace OpenWealth.Data
         List<IBar> bars = new List<IBar>();
         IBars m_TickBars;
 
+        string debKey = string.Empty;
+
         public AggregateBars(IDataManager data, ISymbol symbol, IScale scale)
         {
-            l.Debug("Создаем AggregateBars для " + symbol + " " + scale);
+            l.Info("Создаем AggregateBars для " + symbol + " " + scale);
             if (scale.scaleType != ScaleEnum.sec)
                 throw new NotImplementedException("поддерживаются только ТАЙМ фреймы");
 
             this.symbol = symbol;
             this.scale = scale;
+            this.debKey = "(" + symbol + "." + scale + ") ";
             m_TickBars = data.GetBars(symbol, data.GetScale(ScaleEnum.tick, 1));
             m_TickBars.Lock.AcquireReaderLock(1000);
             try
@@ -54,7 +57,7 @@ namespace OpenWealth.Data
 
             DateTime result = scale.beginning + delta;
             if (l.IsDebugEnabled)
-                l.Debug("Округлил время " + dt + " до " + result);
+                l.Debug(debKey+"Округлил время " + dt + " до " + result);
             return result;
         }
 
@@ -71,14 +74,14 @@ namespace OpenWealth.Data
                     if (alignmentDT == bar.dt)
                     {
                         if (l.IsDebugEnabled)
-                            l.Debug("Найден бар " + bar.number);
+                            l.Debug(debKey+"Найден бар " + bar.number);
                         return bar;
                     }
                     if (alignmentDT > bar.dt) // если искомое время больше времени в баре, то можно закругляться
                         break;
                     bar = this.GetPrevious(bar);
                 }
-                l.Debug("Бар не найден");
+                l.Debug(debKey+"Бар не найден");
                 return null;
             }
             finally
@@ -93,7 +96,7 @@ namespace OpenWealth.Data
         void m_TickBars_NewBarEvent(object sender, BarsEventArgs e) // TODO возможная оптимизация (слишком часто вызываю TimeAlignment(e.bar.dt))
         {
             if(l.IsDebugEnabled)
-                l.Debug("m_TickBars_NewBarEvent новый тик " + e.bar.number);
+                l.Debug(debKey+"m_TickBars_NewBarEvent новый тик " + e.bar);
             Lock.AcquireWriterLock(1000);
             try
             {
@@ -106,7 +109,8 @@ namespace OpenWealth.Data
                 if (bar == null)
                 {
                     if(l.IsDebugEnabled)
-                        l.Debug("m_TickBars_NewBarEvent Создаю новый бар " + TimeAlignment(e.bar.dt));
+                        l.Debug(debKey+"m_TickBars_NewBarEvent Создаю новый бар " + TimeAlignment(e.bar.dt));
+
                     bar = new AggregateBar(TimeAlignment(e.bar.dt), e.bar.number, e.bar.close, e.bar.close, e.bar.close, e.bar.close, e.bar.volume);
 
                     bars.Add(bar);
@@ -122,13 +126,13 @@ namespace OpenWealth.Data
                     return;
                 }
 
-                l.Debug("m_TickBars_NewBarEvent Добавляю тик в бар");
+                l.Debug(debKey+"m_TickBars_NewBarEvent Добавляю тик в бар");
 
                 if ((m_LastTick != null) &&
                         ((m_LastTick.dt > e.bar.dt)
                         || ((m_LastTick.dt == e.bar.dt) && (m_LastTick.number > e.bar.number))))
                 {
-                    l.Debug("Тики пришли не по порядку. Пересчитываю весь бар");
+                    l.Debug(debKey+"Тики пришли не по порядку. Пересчитываю весь бар");
                     RecalcBar(bar);
                 }
                 else
@@ -146,7 +150,7 @@ namespace OpenWealth.Data
 
         void RecalcBar(AggregateBar bar)
         {
-            l.Debug("!!!!!!!!!!!!!!!!!     RecalcBar " + bar.number.ToString());
+            l.Info("RecalcBar " + bar.number.ToString());
             bar.Lock.AcquireWriterLock(1000);
             try
             {
@@ -236,12 +240,12 @@ namespace OpenWealth.Data
                 {
                     if (bars.Count > 0)
                     {
-                        l.Debug("GetFirst " + bars[0]);
+                        l.Debug(debKey+"GetFirst " + bars[0]);
                         return bars[0];
                     }
                     else
                     {
-                        l.Debug("GetFirst null");
+                        l.Debug(debKey+"GetFirst null");
                         return null;
                     }
                 }
@@ -262,12 +266,12 @@ namespace OpenWealth.Data
                     if (bars.Count > 0)
                     {
                         if(l.IsDebugEnabled)
-                            l.Debug("GetLast " + bars[bars.Count - 1]);
+                            l.Debug(debKey+"GetLast " + bars[bars.Count - 1]);
                         return bars[bars.Count - 1];
                     }
                     else
                     {
-                        l.Debug("GetLast null");
+                        l.Debug(debKey+"GetLast null");
                         return null;
                     }
                 }

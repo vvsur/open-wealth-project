@@ -36,6 +36,11 @@ namespace OpenWealth.Simple
             this.ext = ext;
         }
 
+        public override string ToString()
+        {
+            return string.Concat("Tick ", number, " ", dt, " ", m_Price, " ", volume);
+        }
+
         #region Lock
         System.Threading.ReaderWriterLock m_lock = new System.Threading.ReaderWriterLock();
         public System.Threading.ReaderWriterLock Lock { get { return m_lock; } }
