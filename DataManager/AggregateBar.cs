@@ -12,7 +12,7 @@ namespace OpenWealth.Data
         public void AddTick(IBar tick)
         {
             if(l.IsDebugEnabled)
-                l.Debug("AggregateBars.AddTick Добавляю тик " + tick.number);
+                l.Debug("AddTick Добавляю тик " + tick);
             Lock.AcquireWriterLock(1000);
             try
             {

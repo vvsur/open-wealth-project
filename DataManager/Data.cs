@@ -87,13 +87,13 @@ namespace OpenWealth.Data
             }
         }
 
-        public ISymbol GetSymbol(string marketNameDotName)
+        public ISymbol GetSymbol(string symbolNameDotMarketName)
         {
-            string[] split = marketNameDotName.Split('.');
+            string[] split = symbolNameDotMarketName.Split('.');
             if (split.Length != 2)
             {
-                l.Info("Не могу распарсить название бумаги "+ marketNameDotName);
-                GetSymbol(string.Empty, marketNameDotName);
+                l.Info("Не могу распарсить название бумаги " + symbolNameDotMarketName);
+                GetSymbol(string.Empty, symbolNameDotMarketName);
                 return null;
             }
             return GetSymbol(split[1], split[0]);

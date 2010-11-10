@@ -2,7 +2,7 @@
 
 namespace OpenWealth
 {
-    public enum LogLevel { Debug = 0, Info = 1, Warn = 2, Error = 3, Fatal = 4 };
+    public enum LogLevel { Debug = 0, Info = 1, Warn = 2, Error = 3, Fatal = 4, NoLog = 5 };
     /// <summary>
     /// Интерфейс описывающий Логгер
     /// Попытался сделать совместимым с Log4Net.ILog интерфейсом

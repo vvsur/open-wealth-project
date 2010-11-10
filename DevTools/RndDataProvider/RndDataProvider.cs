@@ -7,30 +7,17 @@ namespace OpenWealth.RndDataSource
     {
         static ILog l = Core.GetLogger(typeof(RndDataProvider).FullName);
 
-        double aaa, bbb;
-        int m_TickNum = 0;
-        Random rnd = new Random();
-        System.Timers.Timer timer;
         IInterface interf; 
-
-        IDataManager data;
 
         #region реализация IPlugin
 
         public void Init()
         {
             l.Debug("Инициирую RndDataSource");
-            data = Core.GetGlobal("data") as IDataManager;
             interf = Core.GetGlobal("Interface") as IInterface;
 
-            if (interf == null)
+            if (interf != null)
             {
-                timer = new System.Timers.Timer(100);
-                timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
-            }
-            else
-            {
-                interf.AddMenuItem("Тестовые тики", "Включить генератор", null, item1_Click);
                 interf.AddMenuItem("Тестовые тики", "Отправить тик в ручную", null, item2_Click);
                 interf.AddMenuItem("Тестовые тики", "Настройки генератора тиков", null, item3_Click);
             }
@@ -44,36 +31,12 @@ namespace OpenWealth.RndDataSource
 
         void item3_Click(object sender, EventArgs e)
         {
-            TimerSettingForm f = new TimerSettingForm(timer);
+            TimerSettingForm f = new TimerSettingForm(this);
             f.Show();
-        }
-
-        void item1_Click(object sender, EventArgs e)
-        {
-            if (timer.Enabled)
-            {
-                (sender as ToolStripItem).Text = "Включить генератор";
-                timer.Enabled = false;
-            }
-            else
-            {
-                (sender as ToolStripItem).Text = "Выключить генератор";
-                timer.Enabled = true;
-            }
         }
 
         #endregion реализация IPlugin
 
-        void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            aaa += rnd.NextDouble() - 0.5;
-            bbb += 2*rnd.NextDouble() - 1;
-
-            l.Debug("RndDataSource создаю и добавляю новые бары. m_TickNum=" + m_TickNum);
-
-            data.GetBars("TestMarket", "AAA", ScaleEnum.tick, 1).Add(this, new OpenWealth.Simple.Tick(DateTime.Now, ++m_TickNum, aaa, rnd.Next(20)));
-            data.GetBars("TestMarket", "BBB", ScaleEnum.tick, 1).Add(this, new OpenWealth.Simple.Tick(DateTime.Now, ++m_TickNum, bbb, rnd.Next(20)));
-        }
 
         #region IDataProvider
         public bool isHistoryProvider { get { return false; } }

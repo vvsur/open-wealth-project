@@ -5,21 +5,24 @@ namespace OpenWealth.RndDataSource
 {
     public partial class HandTickForm : Form
     {
+        static ILog l = Core.GetLogger(typeof(HandTickForm).FullName);
+        IDataProvider plugin;
+
         public HandTickForm(IDataProvider plugin)
         {
             InitializeComponent();
 
             this.plugin = plugin;
-            this.data = Core.GetGlobal("data") as IDataManager;
-            this.MdiParent = Core.GetGlobal("MainForm") as Form;
-        }
 
-        static ILog l = Core.GetLogger(typeof(HandTickForm).FullName);
-        IDataProvider plugin;
-        IDataManager data;
+            IInterface interf = Core.GetGlobal("Interface") as IInterface;
+            if (interf != null)
+                if (interf.GetMainForm() != null)
+                    this.MdiParent = interf.GetMainForm();
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            IDataManager data = Core.GetGlobal("data") as IDataManager;
             if (data != null)
             {
                 IBar tick = null;

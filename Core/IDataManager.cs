@@ -15,7 +15,7 @@ namespace OpenWealth
 
         IEnumerable<ISymbol> Symbols { get; }
         ISymbol GetSymbol(string marketName, string name);
-        ISymbol GetSymbol(string marketNameDotName);
+        ISymbol GetSymbol(string symbolNameDotMarketName);
         // TODO событие новый символ
         // TODO событие новый Bars
 
