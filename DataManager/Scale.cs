@@ -81,9 +81,9 @@ namespace OpenWealth.Data
 
         public TimeSpan ToTimeSpan()
         {
-            if (scaleType != ScaleEnum.month)
+            if (scaleType == ScaleEnum.month)
                 return new TimeSpan(30,0,0,0);
-            if (scaleType != ScaleEnum.sec)
+            if (scaleType == ScaleEnum.sec)
                 return new TimeSpan(0, 0, interval);
             l.Error("ToTimeSpan не может преобразовать " + scaleType);
             return new TimeSpan(0, 0, 0);
