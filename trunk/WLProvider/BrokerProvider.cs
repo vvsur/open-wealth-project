@@ -113,12 +113,6 @@ namespace OpenWealth.WLProvider
             l.Debug("Initialize " + brokerHost.GetType().FullName + " " + authProvider.GetType().FullName);
             base.Initialize(brokerHost, authProvider);
             this.brokerHost = brokerHost;
-
-            //Церих делает сдесь следующее:
-            // Получяет WealthLabPro.MainModule::Instance
-            // Очищает WealthLabPro.MainModule::get_AccountNumbers()
-            // Заполняет WealthLabPro.MainModule::get_AccountNumbers() новыми значениями
-            // Добавляет меню WealthLabPro.MainModule::AddMenuItem(string, string, string, class [WealthLab]WealthLab.ClickMenuItem)
         }
         public override void PlaceOrder(IList<Order> orders)
         {
