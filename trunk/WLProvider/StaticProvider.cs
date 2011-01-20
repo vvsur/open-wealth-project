@@ -282,7 +282,7 @@ namespace OpenWealth.WLProvider
 
             while (b != bars.Last)
             {
-                result.Add(b.dt, b.open, b.high, b.low, b.close, b.volume);
+                result.Add(b.GetDateTime(), b.Open, b.High, b.Low, b.Close, b.Volume);
                 b = bars.GetNext(b);
             }
 
@@ -291,14 +291,14 @@ namespace OpenWealth.WLProvider
             if (b != null) // а значит указывает на Last
             {
                 if ((!includePartialBar)&&((result.Date[result.Count - 1] + bars.scale.ToTimeSpan()) < (DateTime.Now - sec3)))
-                    result.Add(b.dt, b.open, b.high, b.low, b.close, b.volume);
+                    result.Add(b.GetDateTime(), b.Open, b.High, b.Low, b.Close, b.Volume);
                 if (includePartialBar)
                 {
-                    result.Open.PartialValue = b.open;;
-                    result.Close.PartialValue = b.close;
-                    result.High.PartialValue = b.high;
-                    result.Low.PartialValue = b.low;
-                    result.Volume.PartialValue = b.volume;
+                    result.Open.PartialValue = b.Open;;
+                    result.Close.PartialValue = b.Close;
+                    result.High.PartialValue = b.High;
+                    result.Low.PartialValue = b.Low;
+                    result.Volume.PartialValue = b.Volume;
                 }
             }
             
@@ -392,9 +392,6 @@ namespace OpenWealth.WLProvider
             }
             throw new Exception("не может того быть!");
         }
-
-
-
 
         #endregion
     }
