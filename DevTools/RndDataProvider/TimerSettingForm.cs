@@ -34,7 +34,7 @@ namespace OpenWealth.RndDataSource
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
         }
 
-        double price = 100;
+        float price = 100;
         static int tickNum = 1;
         Random rnd = new Random();
 
@@ -42,7 +42,7 @@ namespace OpenWealth.RndDataSource
         {
             lock (rnd)
             {
-                price += rnd.NextDouble() - 0.5;
+                price += (float)(rnd.NextDouble() - 0.5);
                 l.Debug("RndDataSource создаю и добавляю новые бары. m_TickNum=" + tickNum);
                 data.GetBars(data.GetSymbol(textBox1.Text), data.GetScale(ScaleEnum.tick, 1)).Add(dataProvider, new OpenWealth.Simple.Tick(DateTime.Now, tickNum++, price, rnd.Next(15)+5));
             }

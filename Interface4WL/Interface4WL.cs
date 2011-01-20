@@ -161,9 +161,8 @@ namespace OpenWealth.WLProvider
             }
         }
 
-        public void Init()
-        {
-        }
+        public void Init() { }
+        public void Stop() { }
 
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {

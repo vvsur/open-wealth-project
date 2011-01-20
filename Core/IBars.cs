@@ -14,12 +14,18 @@ namespace OpenWealth
 
         void Add(IDataProvider system, IBar bar);
         void Change(IDataProvider system, IBar bar);
+        void Delete(IDataProvider system, IBar bar);
 
      //   IBar this[int i] { get; }
         int Count { get; }
 
         IBar First { get; }
         IBar Last { get; }
+        /// <summary>
+        /// Возвращает бар, с указанным временем, или ближайший бар с меньшим временем
+        /// Если найдено несколько баров с указанным временем, то возвращает последний из найденных
+        /// </summary>
+        IBar Get(int dt);
         IBar GetPrevious(IBar bar);
         IBar GetNext(IBar bar);
 
@@ -34,11 +40,12 @@ namespace OpenWealth
     /// </summary>
     public class BarsEventArgs : EventArgs
     {
+        public IBars bars { get; private set; }
         public IBar bar { get; private set; }
-        public BarsEventArgs(IBar bar)
+        public BarsEventArgs(IBars bars, IBar bar)
         {
+            this.bars = bars;
             this.bar = bar;
         }
     }
-
 }

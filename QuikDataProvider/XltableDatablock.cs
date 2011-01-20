@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace OpenWealth.QuikDataProvider.DDE
+namespace OpenWealth.QuikDataProvider
     {
     /// <summary>
     /// Специальный класс для прыжкам по FastTableFormat

@@ -10,7 +10,7 @@ namespace OpenWealth.Simple
     /// </summary>
     public class SettingsHost : ISettingsHost, IPlugin
     {
-        static ILog l = Core.GetLogger(typeof(SettingsHost).FullName);
+        private readonly static ILog l = Core.GetLogger(typeof(SettingsHost).FullName);
 
         public SettingsHost()
         {
@@ -21,7 +21,11 @@ namespace OpenWealth.Simple
             Load();
         }
 
-        public void Init() 
+        public void Init()
+        {
+            //Load();
+        }
+        public void Stop()
         {
             //Load();
         }
@@ -32,11 +36,18 @@ namespace OpenWealth.Simple
 
         void Save()
         {
-            l.Debug("Save " + filename);
-            XmlSerializer serializer = new XmlSerializer(typeof(SerializableDictionary<string, string>));
-            TextWriter writer = new StreamWriter(filename);
-            serializer.Serialize(writer, settings);
-            writer.Close();
+            try
+            {
+                l.Debug("Save " + filename);
+                XmlSerializer serializer = new XmlSerializer(typeof(SerializableDictionary<string, string>));
+                TextWriter writer = new StreamWriter(filename);
+                serializer.Serialize(writer, settings);
+                writer.Close();
+            }
+            catch (Exception e)
+            {
+                l.Info("Save() Exception " + e.ToString());
+            }
         }
 
         void Load()
@@ -124,7 +135,7 @@ namespace OpenWealth.Simple
 
         public bool Get(string key, bool defaultValue)
         {
-            return bool.Parse(Get(key, bool.FalseString));
+            return bool.Parse(Get(key, defaultValue.ToString()));
         }
 
         public void Set(string key, bool value)
@@ -134,7 +145,7 @@ namespace OpenWealth.Simple
 
         public int Get(string key, int defaultValue)
         {
-            return int.Parse(Get(key, "0"));
+            return int.Parse(Get(key, defaultValue.ToString()));
         }
 
         public void Set(string key, int value)
@@ -144,12 +155,22 @@ namespace OpenWealth.Simple
 
         public double Get(string key, double defaultValue)
         {
-            return double.Parse(Get(key, "0"));
+            return double.Parse(Get(key, defaultValue.ToString()));
         }
 
         public void Set(string key, double value)
         {
             Set(key, value.ToString());
+        }
+
+        public DateTime Get(string key, DateTime defaultValue)
+        {
+            return DateTime.ParseExact(Get(key, defaultValue.ToString("yyyy.MM.dd hh:mm:ss.zzz")), "yyyy.MM.dd hh:mm:ss.zzz", null);
+        }
+
+        public void Set(string key, DateTime value)
+        {
+            Set(key, value.ToString("yyyy.MM.dd hh:mm:ss.zzz"));
         }
     }
 }

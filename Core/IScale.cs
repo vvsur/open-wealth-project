@@ -10,7 +10,7 @@ namespace OpenWealth
     {
         ScaleEnum scaleType { get; }
         int interval { get; }
-        DateTime beginning { get; }
+        int beginning { get; }
         string ToString();
         bool CanConvertTo(IScale scale);
         TimeSpan ToTimeSpan();

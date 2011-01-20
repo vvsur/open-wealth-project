@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace OpenWealth.Data
+namespace OpenWealth.DataManager
 {
     public class AggregateBars : IBars
     {
@@ -32,7 +32,7 @@ namespace OpenWealth.Data
                 IBar bar = m_TickBars.First;
                 while (bar != null)
                 {
-                    m_TickBars_NewBarEvent(m_TickBars, new BarsEventArgs(bar));
+                    m_TickBars_NewBarEvent(m_TickBars, new BarsEventArgs(this,bar));
                     bar = m_TickBars.GetNext(bar);
                 }
                 m_TickBars.NewBarEvent += new EventHandler<BarsEventArgs>(m_TickBars_NewBarEvent);
@@ -44,40 +44,37 @@ namespace OpenWealth.Data
             }
         }        
 
-        public DateTime TimeAlignment(DateTime dt)
+        public int TimeAlignment(int dt)
         {
             if (scale.scaleType != ScaleEnum.sec)
                 throw new InvalidOperationException("Для scaleType отличного от ScaleEnum.sec вызов данного метода ошибочен");
 
-            TimeSpan delta = dt - scale.beginning;
-            Int64 sec = (Int64)delta.TotalSeconds;
-            sec = (sec / scale.interval) * scale.interval;
+            int periods = (dt - scale.beginning) / scale.interval;
 
-            delta = new TimeSpan(0, (int)(sec / 60), (int)(sec % 60));
+            int result = scale.beginning + periods * scale.interval;
 
-            DateTime result = scale.beginning + delta;
             if (l.IsDebugEnabled)
-                l.Debug(debKey+"Округлил время " + dt + " до " + result);
+                l.Debug(debKey + "Округлил время " + DateTime2Int.DateTime(dt) + " до " + DateTime2Int.DateTime(result));
             return result;
         }
 
-        public IBar FindBar(DateTime dt)
+        public IBar FindBar(int dt)
         {
             if (!Lock.IsWriterLockHeld)
                 Lock.AcquireReaderLock(1000);
             try
             {
-                DateTime alignmentDT = TimeAlignment(dt);
+                int alignmentDT = TimeAlignment(dt);
                 IBar bar = this.Last;
                 while (bar != null)
                 {
-                    if (alignmentDT == bar.dt)
+                    if (alignmentDT == bar.DT)
                     {
                         if (l.IsDebugEnabled)
-                            l.Debug(debKey+"Найден бар " + bar.number);
+                            l.Debug(debKey+"Найден бар " + bar.Number);
                         return bar;
                     }
-                    if (alignmentDT > bar.dt) // если искомое время больше времени в баре, то можно закругляться
+                    if (alignmentDT > bar.DT) // если искомое время больше времени в баре, то можно закругляться
                         break;
                     bar = this.GetPrevious(bar);
                 }
@@ -91,7 +88,7 @@ namespace OpenWealth.Data
             }
         }
 
-        IBar m_LastTick;
+        IBar m_LastTick = null;
 
         void m_TickBars_NewBarEvent(object sender, BarsEventArgs e) // TODO возможная оптимизация (слишком часто вызываю TimeAlignment(e.bar.dt))
         {
@@ -100,47 +97,41 @@ namespace OpenWealth.Data
             Lock.AcquireWriterLock(1000);
             try
             {
-                if (m_LastTick == e.bar)
-                    return;
-                m_LastTick = e.bar;
-
-                AggregateBar bar = FindBar(e.bar.dt) as AggregateBar;
+                AggregateBar bar = FindBar(e.bar.DT) as AggregateBar;
 
                 if (bar == null)
                 {
-                    if(l.IsDebugEnabled)
-                        l.Debug(debKey+"m_TickBars_NewBarEvent Создаю новый бар " + TimeAlignment(e.bar.dt));
+                    if (l.IsDebugEnabled)
+                        l.Debug(debKey + "m_TickBars_NewBarEvent Создаю новый бар " + TimeAlignment(e.bar.DT));
 
-                    bar = new AggregateBar(TimeAlignment(e.bar.dt), e.bar.number, e.bar.close, e.bar.close, e.bar.close, e.bar.close, e.bar.volume);
+                    bar = new AggregateBar(TimeAlignment(e.bar.DT), e.bar.Number, e.bar.Close, e.bar.Close, e.bar.Close, e.bar.Close, e.bar.Volume);
 
                     bars.Add(bar);
 
                     EventHandler<BarsEventArgs> ev = NewBarEvent;
                     if (ev != null)
-                        ev(this, new BarsEventArgs(bar));
-
-                    ev = ChangeBarEvent;
-                    if (ev != null)
-                        ev(this, new BarsEventArgs(bar));
-
-                    return;
-                }
-
-                l.Debug(debKey+"m_TickBars_NewBarEvent Добавляю тик в бар");
-
-                if ((m_LastTick != null) &&
-                        ((m_LastTick.dt > e.bar.dt)
-                        || ((m_LastTick.dt == e.bar.dt) && (m_LastTick.number > e.bar.number))))
-                {
-                    l.Debug(debKey+"Тики пришли не по порядку. Пересчитываю весь бар");
-                    RecalcBar(bar);
+                        ev(this, new BarsEventArgs(this,bar));
                 }
                 else
-                    bar.AddTick(e.bar);
+                {
+                    l.Debug(debKey + "m_TickBars_NewBarEvent Добавляю тик в бар");
 
-                EventHandler<BarsEventArgs> changeBarEvent = ChangeBarEvent;
-                if (changeBarEvent != null)
-                    changeBarEvent(this, new BarsEventArgs(bar));
+                    if ((m_LastTick != null) &&
+                            ((m_LastTick.DT > e.bar.DT)
+                            || ((m_LastTick.DT == e.bar.DT) && (m_LastTick.Number > e.bar.Number))))
+                    {
+                        l.Debug(debKey + "Тики пришли не по порядку. Пересчитываю весь бар");
+                        RecalcBar(bar);
+                    }
+                    else
+                        bar.AddTick(e.bar);
+
+                    m_LastTick = e.bar;
+
+                    EventHandler<BarsEventArgs> changeBarEvent = ChangeBarEvent;
+                    if (changeBarEvent != null)
+                        changeBarEvent(this, new BarsEventArgs(this,bar));
+                }
             }
             finally
             {
@@ -150,8 +141,8 @@ namespace OpenWealth.Data
 
         void RecalcBar(AggregateBar bar)
         {
-            l.Info("RecalcBar " + bar.number.ToString());
-            bar.Lock.AcquireWriterLock(1000);
+            l.Info("RecalcBar " + bar.Number);
+            Lock.AcquireWriterLock(1000);
             try
             {
                 bar.Clear();
@@ -161,7 +152,7 @@ namespace OpenWealth.Data
                     IBar tick = m_TickBars.First;
                     while (tick != null)
                     {
-                        if (TimeAlignment(tick.dt) == bar.dt)
+                        if (TimeAlignment(tick.DT) == bar.DT)
                             bar.AddTick(tick);
                         tick = m_TickBars.GetNext(tick);
                     }
@@ -174,7 +165,7 @@ namespace OpenWealth.Data
             }
             finally
             {
-                bar.Lock.ReleaseWriterLock();
+                Lock.ReleaseWriterLock();
             }
         }
 
@@ -200,8 +191,7 @@ namespace OpenWealth.Data
 
             EventHandler<BarsEventArgs> e = NewBarEvent;
             if (e != null)
-                e(this, new BarsEventArgs(bar));
-
+                e(this, new BarsEventArgs(this, bar));
         }
 
         public void Change(IDataProvider system, IBar bar)
@@ -210,7 +200,7 @@ namespace OpenWealth.Data
             {
                 EventHandler<BarsEventArgs> e = ChangeBarEvent;
                 if (e != null)
-                    e(this, new BarsEventArgs(bar));
+                    e(this, new BarsEventArgs(this, bar));
             }
             else
                 Add(system, bar);
@@ -343,6 +333,62 @@ namespace OpenWealth.Data
             finally
             {
                 Lock.ReleaseReaderLock();
+            }
+        }
+
+        public bool BarExists(long number, out int index)
+        {
+            m_lock.AcquireReaderLock(1000);
+            try
+            {
+                for (index = 0; index < bars.Count; ++index)
+                {
+                    if (bars[index].Number == number)
+                        return true;
+                    else
+                        if (bars[index].Number > number)
+                            return false;
+                }
+                return false;
+            }
+            finally
+            {
+                m_lock.ReleaseReaderLock();
+            }
+        }
+
+        public void Delete(IDataProvider system, IBar bar)
+        {
+            m_lock.AcquireWriterLock(1000);
+            try
+            {
+                int index;
+                if (BarExists(bar.Number, out index))
+                    bars.RemoveAt(index);
+            }
+            finally
+            {
+                m_lock.ReleaseWriterLock();
+            }
+        }
+
+        public IBar Get(int dt)
+        {
+            m_lock.AcquireReaderLock(1000);
+            try
+            {
+                if ((bars.Count == 0)||((bars[0].DT > dt)))
+                    return null;
+                if (bars[bars.Count - 1].DT < dt)
+                    return bars[bars.Count - 1];
+                for (int i = 1; i < bars.Count; ++i)
+                    if (bars[i].DT > dt)
+                        return bars[i-1];
+                return null;
+            }
+            finally
+            {
+                m_lock.ReleaseReaderLock();
             }
         }
 

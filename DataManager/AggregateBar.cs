@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace OpenWealth.Data
+namespace OpenWealth.DataManager
 {
     public class AggregateBar : OpenWealth.Simple.Bar, IBar
     {
@@ -11,47 +11,46 @@ namespace OpenWealth.Data
 
         public void AddTick(IBar tick)
         {
-            if(l.IsDebugEnabled)
+            if (l.IsDebugEnabled)
                 l.Debug("AddTick Добавляю тик " + tick);
-            Lock.AcquireWriterLock(1000);
-            try
+
+            if (Double.IsNaN(Open))
             {
-                if (Double.IsNaN(open))
-                {
-                    open = tick.open;
-                    high = tick.high;
-                    low = tick.low;
-                    close = tick.close;
-                }
-                else
-                {
-                    this.close = tick.close;
-                    if (this.high < tick.high)
-                        this.high = tick.high;
-                    if (this.low > tick.low)
-                        this.low = tick.low;
-                }
-                this.volume += tick.volume;
+                Open = tick.Open;
+                High = tick.High;
+                Low = tick.Low;
+                Close = tick.Close;
             }
-            finally
+            else
             {
-                Lock.ReleaseWriterLock();
+                this.Close = tick.Close;
+                if (this.High < tick.High)
+                    this.High = tick.High;
+                if (this.Low > tick.Low)
+                    this.Low = tick.Low;
             }
+            this.Volume += tick.Volume;
         }
 
         public void Clear()
         {
-            open = Double.NaN;
-            high = Double.MinValue;
-            low = Double.MaxValue;
-            close = Double.NaN;
-            volume = 0;
+            Open = float.NaN;
+            High = float.MinValue;
+            Low = float.MaxValue;
+            Close = float.NaN;
+            Volume = 0;
         }
 
-        public AggregateBar(DateTime dt, Int64 number,
-            Double open, Double high, Double low, Double close, int volume)
+        public AggregateBar(int dt, int number,
+            float open, float high, float low, float close, int volume)
             : base(dt, number, open, high, low, close, volume)
         {            
+        }
+
+        public AggregateBar(int dt, int number,
+            float price, int volume)
+            : base(dt, number, price, price, price, price, volume)
+        {
         }
     }
 }

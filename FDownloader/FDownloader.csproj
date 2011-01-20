@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{69F669F4-92CF-4BE2-A1F6-3A69E932CE99}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FDownloader</RootNamespace>
+    <AssemblyName>FDownloader</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\obj\Debug\</BaseIntermediateOutputPath>
+    <DefineConstants>TRACE;DEBUG;LoadFromFiles</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\obj\Release\</BaseIntermediateOutputPath>
+    <DefineConstants>LoadFromFiles</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataScale.cs" />
+    <Compile Include="DownloadPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DownloadPage.Designer.cs">
+      <DependentUpon>DownloadPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FDownloader.cs" />
+    <Compile Include="FDownloaderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FDownloaderForm.Designer.cs">
+      <DependentUpon>FDownloaderForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FinamDataScale.cs" />
+    <Compile Include="FinamHelper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FinamTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FinamTreeView.Designer.cs">
+      <DependentUpon>FinamTreeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FinamTreeViewPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FinamTreeViewPage.Designer.cs">
+      <DependentUpon>FinamTreeViewPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Page.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingsPage.Designer.cs">
+      <DependentUpon>SettingsPage.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DownloadPage.resx">
+      <DependentUpon>DownloadPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FDownloaderForm.resx">
+      <DependentUpon>FDownloaderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FinamTreeView.resx">
+      <DependentUpon>FinamTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FinamTreeViewPage.resx">
+      <DependentUpon>FinamTreeViewPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsPage.resx">
+      <DependentUpon>SettingsPage.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{51025FD9-31B2-44A3-BEC2-BD887E6AC1AE}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

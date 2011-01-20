@@ -12,15 +12,13 @@ namespace OpenWealth
     /// </summary>
     public interface IBar
     {
-        DateTime dt { get; }
-        Int64 number { get; }
-        Double open { get; }
-        Double high { get; }
-        Double low { get; }
-        Double close { get; }
-        int volume { get; }
-        IDictionary<string, Object> ext { get; }
-
-        System.Threading.ReaderWriterLock Lock { get; }
+        int DT { get; }
+        DateTime GetDateTime();
+        int Number { get; }
+        float Open { get; }
+        float High { get; }
+        float Low { get; }
+        float Close { get; }
+        int Volume { get; }
     }
 }

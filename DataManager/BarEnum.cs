@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenWealth.Data
+namespace OpenWealth.DataManager
 {
     public class BarEnum : System.Collections.IEnumerator
     {

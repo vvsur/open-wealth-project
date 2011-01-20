@@ -92,6 +92,7 @@
             this.Controls.Add(this.button1);
             this.Name = "LogForm";
             this.Text = "LogForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LogForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

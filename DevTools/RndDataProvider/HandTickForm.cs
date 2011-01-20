@@ -29,7 +29,7 @@ namespace OpenWealth.RndDataSource
                 try
                 {
                     int number = int.Parse(txtNumber.Text);
-                    double price = double.Parse(txtPrice.Text);
+                    float price = float.Parse(txtPrice.Text);
                     int volume = int.Parse(txtVolume.Text);
 
                     tick = new Simple.Tick(dateTimePicker1.Value, number, price, volume);

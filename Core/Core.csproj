@@ -18,7 +18,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\obj\Debug\</BaseIntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,35 +27,42 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\..\obj\</BaseIntermediateOutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\obj\Release\</BaseIntermediateOutputPath>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Compile Include="Core.cs" />
+    <Compile Include="DateTime2Int.cs" />
     <Compile Include="IAccount.cs" />
     <Compile Include="IBar.cs" />
     <Compile Include="IBars.cs" />
     <Compile Include="IDataManager.cs" />
     <Compile Include="IDataProvider.cs" />
-    <Compile Include="IDeal.cs" />
+    <Compile Include="Robot\IBacktestBotHost.cs" />
+    <Compile Include="Robot\BotResult.cs" />
+    <Compile Include="Robot\Positions.cs" />
+    <Compile Include="Robot\IDeal.cs" />
     <Compile Include="IDescription.cs" />
     <Compile Include="IInterface.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="IMarket.cs" />
-    <Compile Include="IOrder.cs" />
-    <Compile Include="IOrderManager.cs" />
+    <Compile Include="Robot\IOrder.cs" />
+    <Compile Include="Robot\IOrderManager.cs" />
     <Compile Include="IPlugin.cs" />
-    <Compile Include="IRobot.cs" />
+    <Compile Include="Robot\BotParam.cs" />
+    <Compile Include="Robot\IBotHost.cs" />
+    <Compile Include="Robot\IBot.cs" />
     <Compile Include="IScale.cs" />
     <Compile Include="ISettingsHost.cs" />
     <Compile Include="ISymbol.cs" />
@@ -64,6 +72,17 @@
     <Compile Include="Simple\SerializableDictionary.cs" />
     <Compile Include="Simple\SettingsHost.cs" />
     <Compile Include="Simple\Tick.cs" />
+    <Compile Include="Simple\SelectSymbol.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Simple\SelectSymbol.Designer.cs">
+      <DependentUpon>SelectSymbol.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Simple\SelectSymbol.resx">
+      <DependentUpon>SelectSymbol.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

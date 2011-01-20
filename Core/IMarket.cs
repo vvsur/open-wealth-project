@@ -11,6 +11,10 @@ namespace OpenWealth
     public interface IMarket
     {
         string Name { get; }
+        IEnumerable<ISymbol> GetSymbols();
+        ISymbol GetSymbol(string name);
         IDictionary<string, Object> Ext { get; }
+
+        event EventHandler<EventArgs> ChangeSymbols;
     }
 }

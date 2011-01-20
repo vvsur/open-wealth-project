@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace OpenWealth.QuikDataProvider.DDE
+namespace OpenWealth.QuikDataProvider
 {
     public static class AllDealQueue
     {
@@ -13,6 +13,7 @@ namespace OpenWealth.QuikDataProvider.DDE
         static List<byte[]> workQueue = new List<byte[]>();
         static Object locker = new Object();
         static ManualResetEvent mre = new ManualResetEvent(false);
+        public static bool KeepRunning = true;
 
         static Thread thread;
 
@@ -35,9 +36,8 @@ namespace OpenWealth.QuikDataProvider.DDE
 
         static void ThreadDo()
         {
-            //TODO Как определить что WL завершается?
-            //TODO Добавить в IPlugin метод остановки
-            while (true)
+            //TODO Как определить что WealthLab завершается?   Добавить в IPlugin метод остановки
+            while (KeepRunning)
             {
                 try
                 {
@@ -62,7 +62,6 @@ namespace OpenWealth.QuikDataProvider.DDE
                     l.Error("Exception в ThreadDo", ex);
                 }
             }
-
         }
     }
 }

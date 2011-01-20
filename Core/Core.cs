@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 namespace OpenWealth
 {
@@ -11,7 +12,7 @@ namespace OpenWealth
     /// </summary>
     public static class Core
     {        
-        #region Init
+        #region Init Stop
         // ***************************
         // Данный регион служит для инициализации ядра
         // в нем загружаются плагины
@@ -24,30 +25,47 @@ namespace OpenWealth
         static Core()
         {   
             l.Debug("Статический конструктор Core.");
-            string appFileName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string appFilePath = System.IO.Path.GetDirectoryName(appFileName);
-            string pluginsPath1 = System.IO.Path.Combine(appFilePath,"OpenWealth");
-            string pluginsPath2 = System.IO.Path.Combine(appFilePath,"Plugins");
-
-            SetGlobal("AppPath", appFilePath);
-
-            LoadPlugin(appFileName);
-
-            if (Directory.Exists(pluginsPath1))
+            try
             {
-                SetGlobal("PluginsPath", pluginsPath1);
-                foreach (string file in Directory.GetFiles(pluginsPath1, "*.dll", SearchOption.AllDirectories))
-                    LoadPlugin(file);
-            }
-            else 
-                if (Directory.Exists(pluginsPath2))
+                string appFileName = System.Reflection.Assembly.GetEntryAssembly().Location;
+                string coreFileName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string appFilePath = System.IO.Path.GetDirectoryName(appFileName);
+                string pluginsPath1 = System.IO.Path.Combine(appFilePath, "OpenWealth");
+                string pluginsPath2 = System.IO.Path.Combine(appFilePath, "Plugins");
+
+                SetGlobal("AppPath", appFilePath);
+                if (appFileName != coreFileName)
+                    LoadPlugin(coreFileName);
+                LoadPlugin(appFileName);
+
+                if (Directory.Exists(pluginsPath1))
                 {
-                    SetGlobal("PluginsPath", pluginsPath2);
-                    foreach (string file in Directory.GetFiles(pluginsPath2, "*.dll", SearchOption.AllDirectories))
+                    SetGlobal("PluginsPath", pluginsPath1);
+                    foreach (string file in Directory.GetFiles(pluginsPath1, "*.dll", SearchOption.AllDirectories))
                         LoadPlugin(file);
                 }
+                else
+                    if (Directory.Exists(pluginsPath2))
+                    {
+                        SetGlobal("PluginsPath", pluginsPath2);
+                        foreach (string file in Directory.GetFiles(pluginsPath2, "*.dll", SearchOption.AllDirectories))
+                            LoadPlugin(file);
+                    }
+                    else
+                    {
+                        // нет ни одной папки с плагинами. от безысходности загружаю все DLL из папки программы
+                        SetGlobal("PluginsPath", appFilePath);
+                        foreach (string file in Directory.GetFiles(appFilePath, "*.dll", SearchOption.AllDirectories))
+                            if (file != appFileName)
+                                LoadPlugin(file);
+                    }
 
-            InitPlugins();
+                InitPlugins();
+            }
+            catch(Exception e)
+            {
+                l.Error("Ошибка в static Core(). Жаль что узнать о ней никто не сможет т.к. логгер наверняка не загрузился", e);
+            }
         }
 
         /// <summary>
@@ -57,9 +75,13 @@ namespace OpenWealth
         {
             l.Debug("Получаю список ранее загруженных плагинов");
             List<IPlugin> plugins = GetGlobal("plugins") as List<IPlugin>;
-            l.Debug("Вызываю Init у каждого метода");
-            foreach (IPlugin p in plugins)
-                p.Init();
+            if (plugins!=null)
+                lock (plugins)
+                {
+                    l.Debug("Вызываю Init у каждого метода");
+                    foreach (IPlugin p in plugins)
+                        p.Init();
+                }
         }
 
         /// <summary>
@@ -77,20 +99,23 @@ namespace OpenWealth
             }
             try
             {
-                l.Debug("Пытаюсь найти данный тип среди ранее созданных объектов");
-                bool find = false;
-                foreach (IPlugin p in plugins)
-                    if (p.GetType() == type)
-                    {
-                        l.Info("Попытка повторного создания плагина " + type);
-                        find = true;
-                        break;
-                    }
-                if (!find)
+                lock (plugins)
                 {
-                    IPlugin newPlugin = Activator.CreateInstance(type) as IPlugin;
-                    plugins.Add(newPlugin);
-                    l.Debug("Загрузил плагин " + type);
+                    l.Debug("Пытаюсь найти данный тип среди ранее созданных объектов");
+                    bool find = false;
+                    foreach (IPlugin p in plugins)
+                        if (p.GetType() == type)
+                        {
+                            l.Info("Попытка повторного создания плагина " + type);
+                            find = true;
+                            break;
+                        }
+                    if (!find)
+                    {
+                        IPlugin newPlugin = Activator.CreateInstance(type) as IPlugin;
+                        plugins.Add(newPlugin);
+                        l.Debug("Загрузил плагин " + type);
+                    }
                 }
             }
             catch (Exception ex)
@@ -124,6 +149,29 @@ namespace OpenWealth
             }
         }
 
+        /// <summary>
+        /// Остановка всех плагинов, вызывается при завершении программы
+        /// </summary>
+        public static void Stop()
+        {
+            l.Debug("Останавливаю плагины");
+            try
+            {
+                List<IPlugin> plugins = GetGlobal("plugins") as List<IPlugin>;
+                if (plugins == null)
+                    return;
+                lock (plugins)
+                {
+                    foreach (IPlugin p in plugins)
+                        p.Stop();
+                }
+            }
+            catch (Exception ex)
+            {
+                l.Error("Исключение при остановке плагинов", ex);
+            }
+        }
+
         #endregion Init
 
         #region SetGlobal GetGlobal
@@ -135,7 +183,7 @@ namespace OpenWealth
         // PluginsPath - строка, содержащая путь к каталогу с плагинами
         // **********************
 
-        static System.Threading.ReaderWriterLock Lock = new System.Threading.ReaderWriterLock();
+        static ReaderWriterLock Lock = new System.Threading.ReaderWriterLock();
         static Dictionary<string, object> global = new Dictionary<string, object>();
 
         /// <summary>
@@ -187,6 +235,96 @@ namespace OpenWealth
             return result;
         }
 
+        static IDataManager _data = null;
+        public static IDataManager Data
+        {
+            get
+            {
+                Lock.AcquireReaderLock(1000);
+                try
+                {
+                    if (_data != null)
+                        return _data;
+                    else
+                    {
+                        LockCookie lc = Lock.UpgradeToWriterLock(1000);
+                        try
+                        {
+                            _data = Core.GetGlobal("data") as IDataManager;
+                        }
+                        finally
+                        {
+                            Lock.DowngradeFromWriterLock(ref lc);
+                        }
+                        l.Info("Попытка получить Data, в то время как он null");
+                        return _data;
+                    }
+                }
+                finally
+                {
+                    Lock.ReleaseLock();
+                }
+            }
+            set
+            {
+                Lock.AcquireWriterLock(1000);
+                try
+                {
+                    _data = value;
+                    Core.SetGlobal("data", value);
+                }
+                finally
+                {
+                    Lock.ReleaseWriterLock();
+                }
+            }
+        }
+
+        static ISettingsHost _settingsHost = null;
+        public static ISettingsHost SettingsHost
+        {
+            get
+            {
+                Lock.AcquireReaderLock(1000);
+                try
+                {
+                    if (_settingsHost != null)
+                        return _settingsHost;
+                    else
+                    {
+                        LockCookie lc = Lock.UpgradeToWriterLock(1000);
+                        try
+                        {
+                            _settingsHost = Core.GetGlobal("SettingsHost") as ISettingsHost;
+                        }
+                        finally
+                        {
+                            Lock.DowngradeFromWriterLock(ref lc);
+                        }
+                        l.Info("Попытка получить SettingsHost, в то время как он null");
+                        return _settingsHost;
+                    }
+                }
+                finally
+                {
+                    Lock.ReleaseLock();
+                }
+            }
+            set
+            {
+                Lock.AcquireWriterLock(1000);
+                try
+                {
+                    _settingsHost = value;
+                    Core.SetGlobal("SettingsHost", value);
+                }
+                finally
+                {
+                    Lock.ReleaseWriterLock();
+                }
+            }
+        }
+
         #endregion
 
         #region Log
@@ -204,6 +342,10 @@ namespace OpenWealth
         static public ILog GetLogger(String name)
         {
             return logManager.GetLogger(name);
+        }
+        static public ILog GetLogger(Type type)
+        {
+            return logManager.GetLogger(type.FullName);
         }
 
         #endregion Log

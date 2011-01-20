@@ -67,6 +67,7 @@
             this.txtSymbol.Name = "txtSymbol";
             this.txtSymbol.Size = new System.Drawing.Size(123, 20);
             this.txtSymbol.TabIndex = 2;
+            this.txtSymbol.Text = "TestHandS";
             // 
             // dateTimePicker1
             // 
@@ -82,7 +83,8 @@
             this.txtNumber.Location = new System.Drawing.Point(85, 86);
             this.txtNumber.Name = "txtNumber";
             this.txtNumber.Size = new System.Drawing.Size(123, 20);
-            this.txtNumber.TabIndex = 5;
+            this.txtNumber.TabIndex = 4;
+            this.txtNumber.Text = "555";
             // 
             // label3
             // 
@@ -98,7 +100,8 @@
             this.txtPrice.Location = new System.Drawing.Point(85, 112);
             this.txtPrice.Name = "txtPrice";
             this.txtPrice.Size = new System.Drawing.Size(123, 20);
-            this.txtPrice.TabIndex = 7;
+            this.txtPrice.TabIndex = 5;
+            this.txtPrice.Text = "666";
             // 
             // label4
             // 
@@ -114,7 +117,7 @@
             this.button1.Location = new System.Drawing.Point(133, 164);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 8;
+            this.button1.TabIndex = 7;
             this.button1.Text = "Отправить";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -124,7 +127,8 @@
             this.txtVolume.Location = new System.Drawing.Point(85, 138);
             this.txtVolume.Name = "txtVolume";
             this.txtVolume.Size = new System.Drawing.Size(123, 20);
-            this.txtVolume.TabIndex = 9;
+            this.txtVolume.TabIndex = 6;
+            this.txtVolume.Text = "777";
             // 
             // label5
             // 
@@ -140,7 +144,8 @@
             this.txtMarket.Location = new System.Drawing.Point(86, 6);
             this.txtMarket.Name = "txtMarket";
             this.txtMarket.Size = new System.Drawing.Size(123, 20);
-            this.txtMarket.TabIndex = 12;
+            this.txtMarket.TabIndex = 1;
+            this.txtMarket.Text = "TestHandM";
             // 
             // label6
             // 
