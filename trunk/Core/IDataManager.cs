@@ -13,17 +13,18 @@ namespace OpenWealth
         IBars GetBars(ISymbol symbol, IScale scale);
         IBars GetBars(string marketName, string symbol, ScaleEnum scale, int interval);
 
-        IEnumerable<ISymbol> Symbols { get; }
         ISymbol GetSymbol(string marketName, string name);
-        ISymbol GetSymbol(string symbolNameDotMarketName);
-        // TODO событие новый символ
-        // TODO событие новый Bars
+        ISymbol GetSymbol(string marketNameDotSymbolName);
+        void DelSymbol(ISymbol symbol);
 
-        IScale GetScale(ScaleEnum scale, int interval, DateTime beginning);
+        IScale GetScale(ScaleEnum scale, int interval, int beginning);
         IScale GetScale(ScaleEnum scale, int interval);
 
         IMarket GetMarket(string name);
-        IEnumerable<IMarket> Markets { get; }
-        // TODO событие новый рынок
+        IEnumerable<IMarket> GetMarkets();
+
+        // TODO передавать в событии ссылку на добавляемый рынок
+        // TODO событие новый Bars
+        event EventHandler<EventArgs> ChangeMarkets;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OpenWealth.Data
+namespace OpenWealth.DataManager
 {
     public class Symbol : ISymbol
     {
@@ -18,10 +18,7 @@ namespace OpenWealth.Data
 
         public override string ToString()
         {
-            if (Market.Name == string.Empty)
-                return Name;
-            else
-                return Name + "." + Market.Name;
+            return string.Concat(Market, ".", Name);
         }
 
     }

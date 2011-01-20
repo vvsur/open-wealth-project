@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace OpenWealth.Data
+namespace OpenWealth.DataManager
 {
     public class Ticks : IBars
     {
@@ -11,187 +11,51 @@ namespace OpenWealth.Data
 
         public ISymbol symbol { get; protected set; }
         public IScale scale { get; protected set; }
-        public Ticks(ISymbol symbol, IScale scale)
+        public Ticks(ISymbol symbol)
         {
-            l.Debug("Создаем Bars для " + symbol + " " + scale);
+            l.Debug("Создаем Ticks для " + symbol);
             this.symbol = symbol;
             this.scale = scale;
-        }
-        
-        List<IBar> bars = new List<IBar>();
 
-        IBar m_LastBar;
+            ticksFileList = new TicksFiles(symbol);
+        }
+
+        internal TicksFiles ticksFileList;
+
         public void Add(IDataProvider system, IBar bar)
         {
             if (l.IsDebugEnabled)
                 l.Debug("Новый бар " + bar);
 
-            Lock.AcquireWriterLock(1000);
-            try
-            {
-                if ((m_LastBar == null) || (m_LastBar.number < bar.number))
-                {
-                    m_LastBar = bar;
-                    bars.Add(bar);
-                }
-                else
-                    if (m_LastBar.number == bar.number)
-                        return;
-                    else
-                    {
-                        int index;
-                        if (!BarExists(bar.number, out index))
-                            bars.Insert(index, bar);
-                        else
-                            return;
-                    }
-            }
-            finally
-            {
-                Lock.ReleaseWriterLock();
-            }
+            ticksFileList.Add(bar);
 
             EventHandler<BarsEventArgs> e = NewBarEvent;
             if (e != null)
-                e(this, new BarsEventArgs(bar));
-        }
-
-        public bool BarExists(long number, out int index)
-        {
-            index = 0;
-            foreach(IBar bar in bars)
-            {
-                if (bar.number == number)
-                    return true;
-                else
-                    if (bar.number > number)
-                        return false;
-                ++index;
-            }
-            return false;
+                e(this, new BarsEventArgs(this,bar));
         }
 
         public void Change(IDataProvider system, IBar bar)
         {
-            if (bars.Contains(bar))
-            {
-                EventHandler<BarsEventArgs> e = ChangeBarEvent;
-                if (e != null)
-                    e(this, new BarsEventArgs(bar));
-            }
-            else
-                Add(system, bar);
+            l.Error("Тики не могут меняться?");
+
+            EventHandler<BarsEventArgs> ev = ChangeBarEvent;
+            if (ev != null)
+                ev(this, new BarsEventArgs(this,bar));
         }
 
-        /*System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return (System.Collections.IEnumerator)GetEnumerator();
-        }
-        public BarEnum GetEnumerator()
-        {
-            return new BarEnum(bars);
-        }
-        */
-        // TODO Вынисти одинаковые методы Ticks и AggregateBars в общего предка
-        public IBar First
-        {
-            get
-            {
-                Lock.AcquireReaderLock(1000);
-                try
-                {
-                    if (bars.Count > 0)
-                    {
-                        l.Debug("GetFirst " + bars[0]);
-                        return bars[0];
-                    }
-                    else
-                    {
-                        l.Debug("GetFirst null");
-                        return null;
-                    }
-                }
-                finally
-                {
-                    Lock.ReleaseReaderLock();
-                }
-            }
-        }
-        public IBar Last
-        {
-            get
-            {
-                Lock.AcquireReaderLock(1000);
-                try
-                {
-                    if (bars.Count > 0)
-                    {
-                        l.Debug("GetLast " + bars[bars.Count - 1]);
-                        return bars[bars.Count - 1];
-                    }
-                    else
-                    {
-                        l.Debug("GetLast null");
-                        return null;
-                    }
-                }
-                finally
-                {
-                    Lock.ReleaseReaderLock();
-                }
-            }
-        }
-        public IBar GetPrevious(IBar bar)
-        {
-            Lock.AcquireReaderLock(1000);
-            try
-            {
-                for (int find = bars.Count - 1; find > 0; --find)
-                    if (bars[find] == bar)
-                        return bars[find - 1];
-                l.Info("GetPrevious бар не найден, вернул null");
-                return null;
-            }
-            finally
-            {
-                Lock.ReleaseReaderLock();
-            }
-        }
-        // Ввел в качестве кэша, при профилировании
-        int lastGetNextFind = 0;
-        public IBar GetNext(IBar bar)
-        {
-            Lock.AcquireReaderLock(1000);
-            try
-            {
-                // Надеюсь, что с последнего GetNext bar не изменился 
-                if ((lastGetNextFind <= bars.Count - 1) && (bars[lastGetNextFind] == bar))
-                    if ((++lastGetNextFind) == bars.Count)
-                    {
-                        lastGetNextFind = 0;
-                        return null;
-                    }
-                    else
-                        return bars[lastGetNextFind];
-                // Воспользоваться кэшем lastGetNextFind не удалось, ищу по всему массиву
-                // TODO Вообще этот поиск можно ускорить, т.к. массив отсартирован
-                for (int find = bars.Count - 2; find >= 0; --find)
-                    if (bars[find] == bar)
-                    {
-                        lastGetNextFind = find+1;
-                        return bars[lastGetNextFind];
-                    }
-                l.Info("GetNext бар не найден, вернул null");
-                return null;
-            }
-            finally
-            {
-                Lock.ReleaseReaderLock();
-            }
-        }
+        public void Delete(IDataProvider system, IBar bar) { ticksFileList.Delete(bar); }
 
-        public IBar this[int i] { get { return bars[i]; } }
-        public int Count { get { return bars.Count; } }
+        public IBar Get(int dt) { return ticksFileList.Get(dt); }
+
+        public IBar First { get { return ticksFileList.First; } }
+
+        public IBar Last { get { return ticksFileList.Last; } }
+
+        public IBar GetPrevious(IBar bar) { return ticksFileList.GetPrevious(bar); }
+
+        public IBar GetNext(IBar bar)  { return ticksFileList.GetNext(bar); }
+
+        public int Count { get { return ticksFileList.Count; } }
 
         public event EventHandler<BarsEventArgs> NewBarEvent;
         public event EventHandler<BarsEventArgs> ChangeBarEvent;

@@ -50,7 +50,7 @@ namespace OpenWealth.RndDataSource
                 int tickNum = bars.Count;
                 int secNum = tickNum / 4 + 1;
                 TimeFor timeFor = (TimeFor)(tickNum % 4);
-                Double price = 0;
+                float price = 0;
 
                 switch (timeFor)
                 {

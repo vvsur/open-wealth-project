@@ -18,8 +18,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\..\obj\</BaseIntermediateOutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\obj\Debug\</BaseIntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,24 +27,24 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\..\obj\</BaseIntermediateOutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\obj\Release\</BaseIntermediateOutputPath>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Fidelity.Components">
-      <HintPath>..\..\references\Fidelity.Components.dll</HintPath>
+      <HintPath>..\References\Fidelity.Components.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WealthLab, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\references\WealthLab.dll</HintPath>
+    <Reference Include="WealthLab">
+      <HintPath>..\References\WealthLab.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -81,7 +81,7 @@
     <Content Include="Resources\Image1.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Open\Core\Core.csproj">
+    <ProjectReference Include="..\Core\Core.csproj">
       <Project>{51025FD9-31B2-44A3-BEC2-BD887E6AC1AE}</Project>
       <Name>Core</Name>
     </ProjectReference>

@@ -1,49 +1,123 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using System.Runtime.InteropServices;
+using System.IO;
+
 namespace OpenWealth.Simple
 {
     /// <summary>
     /// Тик, реализующий IBar
     /// </summary>
-    public class Tick : IBar
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct Tick : IBar
     {
-        public DateTime dt { get; protected set; }
-        public Int64 number { get; protected set; }
-        public double open { get { return m_Price; } }
-        public double high { get { return m_Price; } }
-        public double low { get { return m_Price; } }
-        public double close { get { return m_Price; } }
-        public int volume { get; protected set; }
-        public IDictionary<string, Object> ext { get; private set; }
+        private readonly static ILog l = Core.GetLogger(typeof(Tick));
 
-        double m_Price;
+        public const int Size = 3 * sizeof(int) + sizeof(float);
 
-        public Tick(DateTime dt, Int64 number, Double price, int volume)
+        private readonly int number;
+        private readonly float price;
+        private readonly int volume;
+        private readonly int dt;
+
+        public int DT
         {
-            this.dt = dt;
-            this.number = number;
-            m_Price = price;
-            this.volume = volume;
-            ext = new Dictionary<string, Object>();
+            get
+            {
+                return dt;
+            }
         }
-        public Tick(DateTime dt, Int64 number, Double price, int volume, IDictionary<string, Object> ext)
+        public int Number
         {
-            this.dt = dt;
+            get
+            {
+                return this.number;
+            }
+        }
+        public float Open
+        {
+            get
+            {
+                return price;
+            }
+        }
+        public float High
+        {
+            get
+            {
+                return price;
+            }
+        }
+        public float Low
+        {
+            get
+            {
+                return price;
+            }
+        }
+        public float Close
+        {
+            get
+            {
+                return price;
+            }
+        }
+        public int Volume
+        {
+            get
+            {
+                return volume;
+            }
+        }
+        public DateTime GetDateTime()
+        {
+            return DateTime2Int.DateTime(dt);
+        }
+
+        public Tick(IBar bar)
+        {
+            if (bar.High != bar.Low)
+                l.Error("Преобразую в Tick бар, который тиком не является " + bar);
+            this.number = bar.Number;
+            this.price = bar.Close;
+            this.volume = bar.Volume;
+            this.dt = bar.DT;
+        }
+        public Tick(DateTime dt, int number, float price, int volue)
+        {
             this.number = number;
-            m_Price = price;
-            this.volume = volume;
-            this.ext = ext;
+            this.price = price;
+            this.volume = volue;
+            this.dt = DateTime2Int.Int(dt);
+        }
+        public Tick(int dt, int number, float price, int volue)
+        {
+            this.number = number;
+            this.price = price;
+            this.volume = volue;
+            this.dt = dt;
+        }
+
+        public Tick(BinaryReader br)
+        {
+            this.dt = br.ReadInt32();
+            this.number = br.ReadInt32();
+            this.price = br.ReadSingle();
+            this.volume = br.ReadInt32();
+        }
+        public void WriteTo(BinaryWriter bw)
+        {
+            bw.Write(this.dt);
+            bw.Write(this.number);
+            bw.Write(this.price);
+            bw.Write(this.volume);
         }
 
         public override string ToString()
         {
-            return string.Concat("Tick ", number, " ", dt, " ", m_Price, " ", volume);
+            return string.Concat("Tick ", GetDateTime().ToString("yyyyMMdd hhmmss"), " ", Number, " ", price, " ", volume);
         }
-
-        #region Lock
-        System.Threading.ReaderWriterLock m_lock = new System.Threading.ReaderWriterLock();
-        public System.Threading.ReaderWriterLock Lock { get { return m_lock; } }
-        #endregion Lock
     }
+
 }

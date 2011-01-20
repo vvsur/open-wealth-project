@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace OpenWealth
 {
     public interface ISettingsHost
@@ -16,6 +17,9 @@ namespace OpenWealth
 
         double Get(string key, double defaultValue);
         void Set(string key, double value);
+
+        DateTime Get(string key, DateTime defaultValue);
+        void Set(string key, DateTime value);
 
         void DeleteKey(string key);
     }

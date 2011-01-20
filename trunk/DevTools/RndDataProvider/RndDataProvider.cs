@@ -18,11 +18,13 @@ namespace OpenWealth.RndDataSource
 
             if (interf != null)
             {
-                interf.AddMenuItem("Тестовые тики", "Генератор ровных баров", null, item1_Click);
-                interf.AddMenuItem("Тестовые тики", "Отправить тик в ручную", null, item2_Click);
-                interf.AddMenuItem("Тестовые тики", "Генератор случайных тиков", null, item3_Click);
+                interf.AddMenuItem("Данные", "Тестовые тики", "Генератор ровных баров", item1_Click);
+                interf.AddMenuItem("Данные", "Тестовые тики", "Отправить тик в ручную", item2_Click);
+                interf.AddMenuItem("Данные", "Тестовые тики", "Генератор случайных тиков", item3_Click);
             }
         }
+
+        public void Stop() { }
 
         void item1_Click(object sender, EventArgs e)
         {

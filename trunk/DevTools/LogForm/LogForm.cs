@@ -6,7 +6,7 @@ using OpenWealth;
 
 namespace DevTools.LogForm
 {
-    public partial class LogForm : Form, IPlugin, IDescription
+    public partial class LogForm : Form, IPlugin
     {
         static ILog l = Core.GetLogger(typeof(LogForm).FullName);
 
@@ -35,6 +35,8 @@ namespace DevTools.LogForm
                 interf.AddMenuItem("Логи", "Отобразить логи", null, item1_Click);
             }       
         }
+
+        public void Stop() { }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -66,12 +68,7 @@ namespace DevTools.LogForm
                 return;
             this.MdiParent = interf.GetMainForm();
             Show();
-        }
-
-        #region IDescription
-        public string Description { get { return "Генератор случайных тиков"; } }
-        public string URL { get { return "www.OpenWealth.ru"; } }
-        #endregion IDescription
+        }   
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -87,6 +84,15 @@ namespace DevTools.LogForm
                 l.LogEvent += new LogEventHandler(l_LogEvent);
             else
                 l.LogEvent -= l_LogEvent;
+        }
+
+        private void LogForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
         }
     }
 }

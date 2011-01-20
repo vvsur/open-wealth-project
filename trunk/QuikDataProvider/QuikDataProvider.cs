@@ -7,9 +7,9 @@ namespace OpenWealth.QuikDataProvider
     {
         static ILog l = Core.GetLogger(typeof(QuikDataProvider).FullName);
 
-        #region реализация IPlugin
-
         DDE.DDEServer ddeServer;
+
+        #region реализация IPlugin
 
         public void Init()
         {
@@ -22,6 +22,11 @@ namespace OpenWealth.QuikDataProvider
             }
             else
                 l.Error("Повторная инициализация плагина");
+        }
+
+        public void Stop() 
+        {
+            AllDealQueue.KeepRunning = false;
         }
 
         #endregion реализация IPlugin

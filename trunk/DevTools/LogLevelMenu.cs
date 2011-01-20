@@ -42,6 +42,8 @@ namespace DevTools
                 l.Error("interf == null");
         }
 
+        public void Stop() { }
+
         void menuClick(object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;

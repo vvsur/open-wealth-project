@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenWealth.Data
+namespace OpenWealth.DataManager
 {
 
     // TODO выделить интерфейс IScale и завязать всё на него, а не на класс
@@ -12,8 +12,8 @@ namespace OpenWealth.Data
 
         public ScaleEnum scaleType {get; private set;}
         public int interval { get; private set; }
-        public DateTime beginning { get; private set; }
-        internal Scale(ScaleEnum scale, int interval, DateTime beginning)
+        public int beginning { get; private set; }
+        internal Scale(ScaleEnum scale, int interval, int beginning)
         {
             this.scaleType = scale;
             this.interval = interval;
@@ -27,10 +27,10 @@ namespace OpenWealth.Data
         string SetName()
         {
             string from;
-            if (this.beginning == DateTime.MinValue)
+            if (this.beginning == -1)
                 from = string.Empty;
             else
-                from = "From" + this.beginning.ToString("yy.MM.dd hh-mm-ss");
+                from = "From" + DateTime2Int.DateTime(beginning).ToString("yyMMdd hhmmss");
 
 
             if ((interval == 1) && (scaleType != ScaleEnum.month))
@@ -61,7 +61,7 @@ namespace OpenWealth.Data
         {
             this.scaleType = scale;
             this.interval = interval;
-            this.beginning = DateTime.MinValue;
+            this.beginning = 0;
             if (scale == ScaleEnum.undefined)
                 l.Error("масштаб Scale не определен");
         }

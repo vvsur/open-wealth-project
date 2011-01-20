@@ -10,36 +10,45 @@ namespace OpenWealth.Simple
     /// </summary>
     public class Bar : IBar
     {
-        public DateTime dt { get; protected set; }
-        public Int64 number { get; protected set; }
-        public Double open { get; protected set; }
-        public Double high { get; protected set; }
-        public Double low { get; protected set; }
-        public Double close { get; protected set; }
-        public int volume { get; protected set; }
-        public IDictionary<string, Object> ext { get; private set; }
+        private readonly static DateTime dt1970 = new DateTime(1970, 1, 1);
 
-        public Bar(DateTime dt, Int64 number, 
-            Double open, Double high, Double low, Double close, int volume)
+        public int DT { get; protected set; }
+        public int Number { get; protected set; }
+        public float Open { get; protected set; }
+        public float High { get; protected set; }
+        public float Low { get; protected set; }
+        public float Close { get; protected set; }
+        public int Volume { get; protected set; }
+        public DateTime GetDateTime()
         {
-            this.dt = dt;
-            this.number = number;
-            this.open = open;
-            this.high = high;
-            this.low = low;
-            this.close = close;
-            this.volume = volume;
-            ext = new Dictionary<string, Object>();
+            return dt1970 + new TimeSpan(DT * TimeSpan.TicksPerSecond);
+        }
+
+        public Bar(DateTime dt, int number, float open, float high, float low, float close, int volume)
+        {
+            this.DT = (int)((TimeSpan)(dt - dt1970)).TotalSeconds;
+            this.Number = number;
+            this.Open = open;
+            this.High = high;
+            this.Low = low;
+            this.Close = close;
+            this.Volume = volume;
+        }
+
+        public Bar(int dt, int number, float open, float high, float low, float close, int volume)
+        {
+            this.DT = dt;
+            this.Number = number;
+            this.Open = open;
+            this.High = high;
+            this.Low = low;
+            this.Close = close;
+            this.Volume = volume;
         }
 
         public override string ToString()
         {
-            return string.Concat("Bar ", number, " ", dt, " ", open, " ", high, " ", low, " ", close, " ", volume);
+            return string.Concat("Bar ", GetDateTime().ToString("yyyyMMss hhmmss"), " ", Number, " ", Open, " ", High, " ", Low, " ", Close, " ", Volume);
         }
-
-        #region Lock
-        System.Threading.ReaderWriterLock m_lock = new System.Threading.ReaderWriterLock();
-        public System.Threading.ReaderWriterLock Lock { get { return m_lock; } }
-        #endregion Lock
     }
 }

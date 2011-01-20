@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace OpenWealth.QuikDataProvider.DDE
+namespace OpenWealth.QuikDataProvider
 {
 
     public partial class XLTableTyped : System.Collections.IEnumerable, System.Collections.IEnumerator
@@ -132,7 +132,7 @@ namespace OpenWealth.QuikDataProvider.DDE
                     table.MoveNext();
                     double volume = (double)table.Current;
 
-                    IBar tick = new OpenWealth.Simple.Tick(ParseDateTimeWithCache(String.Concat(DateStr, " ", TimeStr)), (long)number, price, (int)volume);
+                    IBar tick = new OpenWealth.Simple.Tick(ParseDateTimeWithCache(String.Concat(DateStr, " ", TimeStr)), (int)number, (float)price, (int)volume);
 
                     l.Debug("GetDeals Tick " + MarketStr + "." + CodeStr + " " + tick.ToString());
                     // TODO избавится от null
@@ -150,10 +150,8 @@ namespace OpenWealth.QuikDataProvider.DDE
         // Данные переменные необходимы для работы ParseDateTimeWithCache
         static string dateTimeCacheString = string.Empty;
         static DateTime dateTimeCacheDateTime = new DateTime();
-
 //        static readonly string[] formats = { "dd.MM.yyyy HH:mm:ss", "MM/dd/yyyy hh:mm:sstt", "MM/dd/yyyy HH:mm:ss", "G" };
         static readonly string[] formats = { "G" };
-
         static readonly CultureInfo cultInfo = CultureInfo.CurrentCulture;
        /// <summary>
         /// Если данная строка толькочто преобразовывалась в DateTime то будет использовано предыдущий результат
