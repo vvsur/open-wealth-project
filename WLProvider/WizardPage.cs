@@ -19,11 +19,23 @@ namespace OpenWealth.WLProvider
             // Clear entered symbols
             txtSymbols.Clear(); //TODO Загрузка настроек
 
+            StringBuilder sb = new StringBuilder();
             IDataManager data = Core.GetGlobal("data") as IDataManager;
             if (data != null)
-                foreach (ISymbol symbol in data.Symbols)
-                    txtSymbols.Text += symbol.Name + "." + symbol.Market.Name + " ";
-            txtSymbols.Text = txtSymbols.Text.Trim();
+            {
+                IEnumerable<IMarket> ms = data.GetMarkets();
+                foreach (IMarket m in ms)
+                {
+                    IEnumerable<ISymbol> symbols = m.GetSymbols();
+                    foreach (ISymbol symbol in symbols)
+                    {
+                        sb.Append(symbol);
+                        sb.Append(" ");
+                    }
+                }
+            }
+
+            txtSymbols.Text = sb.ToString().Trim();
         }
 
         public string Symbols() { return txtSymbols.Text; }

@@ -65,13 +65,13 @@ namespace OpenWealth.WLProvider
             Quote q = new Quote();
 
             q.Symbol = (sender as IBars).symbol.ToString();
-            q.TimeStamp = e.bar.dt;
-            q.Ask = e.bar.close;
-            q.Bid = e.bar.close;
-            q.Open = e.bar.close;
-            q.PreviousClose = e.bar.close;
-            q.Price = e.bar.close;
-            q.Size = e.bar.volume;
+            q.TimeStamp = e.bar.GetDateTime();
+            q.Ask = e.bar.Close;
+            q.Bid = e.bar.Close;
+            q.Open = e.bar.Close;
+            q.PreviousClose = e.bar.Close;
+            q.Price = e.bar.Close;
+            q.Size = e.bar.Volume;
 
             UpdateQuote(q);
         }

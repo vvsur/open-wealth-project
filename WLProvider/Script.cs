@@ -42,26 +42,26 @@ namespace OpenWealth.WLProvider
         protected abstract void onBar(); // выполняется на каждом шаге цикла в Execute (в бою будет вызываться на новый bar)
 
         #region Реализация торговых сигналов
-        public Position BuyAtLimit(double limitPrice) { return BuyAtLimit(limitPrice, string.Empty); }
-        public Position BuyAtLimit(double limitPrice, string signalName)
+        public WealthLab.Position BuyAtLimit(double limitPrice) { return BuyAtLimit(limitPrice, string.Empty); }
+        public WealthLab.Position BuyAtLimit(double limitPrice, string signalName)
         {
             PrintDebug(Alerts.Count);
-            Position result = base.BuyAtLimit(bar + 1, limitPrice, signalName);
+            WealthLab.Position result = base.BuyAtLimit(bar + 1, limitPrice, signalName);
             PrintDebug(Alerts.Count);
             return result;
         }
 
-        public Position ShortAtLimit(double limitPrice) { return ShortAtLimit(limitPrice, string.Empty); }
-        public Position ShortAtLimit(double limitPrice, string signalName)
+        public WealthLab.Position ShortAtLimit(double limitPrice) { return ShortAtLimit(limitPrice, string.Empty); }
+        public WealthLab.Position ShortAtLimit(double limitPrice, string signalName)
         {
             PrintDebug(Alerts.Count);
-            Position result = base.ShortAtLimit(bar + 1, limitPrice, signalName);
+            WealthLab.Position result = base.ShortAtLimit(bar + 1, limitPrice, signalName);
             PrintDebug(Alerts.Count);
             return result;
         }
 
-        public bool CoverAtLimit(Position pos, double limitPrice) { return CoverAtLimit(pos, limitPrice, string.Empty); }
-        public bool CoverAtLimit(Position pos, double limitPrice, string signalName)
+        public bool CoverAtLimit(WealthLab.Position pos, double limitPrice) { return CoverAtLimit(pos, limitPrice, string.Empty); }
+        public bool CoverAtLimit(WealthLab.Position pos, double limitPrice, string signalName)
         {
             PrintDebug(Alerts.Count);
             bool result = base.CoverAtLimit(bar + 1, pos, limitPrice, signalName);
@@ -69,8 +69,8 @@ namespace OpenWealth.WLProvider
             return result;
         }
 
-        public bool SellAtLimit(Position pos, double limitPrice) { return SellAtLimit(pos, limitPrice, string.Empty); }
-        public bool SellAtLimit(Position pos, double limitPrice, string signalName)
+        public bool SellAtLimit(WealthLab.Position pos, double limitPrice) { return SellAtLimit(pos, limitPrice, string.Empty); }
+        public bool SellAtLimit(WealthLab.Position pos, double limitPrice, string signalName)
         {
             PrintDebug(Alerts.Count);
             bool result = base.SellAtLimit(bar + 1, pos, limitPrice, signalName);
@@ -78,8 +78,8 @@ namespace OpenWealth.WLProvider
             return result;
         }
 
-        public bool ExitAtLimit(Position pos, double limitPrice) { return ExitAtLimit(pos, limitPrice, string.Empty); }
-        public bool ExitAtLimit(Position pos, double limitPrice, string signalName)
+        public bool ExitAtLimit(WealthLab.Position pos, double limitPrice) { return ExitAtLimit(pos, limitPrice, string.Empty); }
+        public bool ExitAtLimit(WealthLab.Position pos, double limitPrice, string signalName)
         {
             PrintDebug(Alerts.Count);
             bool result = base.ExitAtLimit(bar + 1, pos, limitPrice, signalName);
