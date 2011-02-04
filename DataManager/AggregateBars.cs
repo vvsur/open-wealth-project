@@ -101,10 +101,12 @@ namespace OpenWealth.DataManager
 
                 if (bar == null)
                 {
-                    if (l.IsDebugEnabled)
-                        l.Debug(debKey + "m_TickBars_NewBarEvent Создаю новый бар " + TimeAlignment(e.bar.DT));
+                    int timeAlignment = TimeAlignment(e.bar.DT);
 
-                    bar = new AggregateBar(TimeAlignment(e.bar.DT), e.bar.Number, e.bar.Close, e.bar.Close, e.bar.Close, e.bar.Close, e.bar.Volume);
+                    if (l.IsDebugEnabled)
+                        l.Debug(debKey + "m_TickBars_NewBarEvent Создаю новый бар " + DateTime2Int.DateTime(timeAlignment) );
+
+                    bar = new AggregateBar(timeAlignment, timeAlignment + scale.interval - 1, e.bar.Number, e.bar.Close, e.bar.Close, e.bar.Close, e.bar.Close, e.bar.Volume);
 
                     bars.Add(bar);
 

@@ -28,6 +28,15 @@ namespace OpenWealth.Simple
                 return dt;
             }
         }
+
+        public int EndDT
+        {
+            get
+            {
+                return dt;
+            }
+        }
+
         public int Number
         {
             get

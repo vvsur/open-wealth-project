@@ -16,7 +16,6 @@ namespace OpenWealth
         void Change(IDataProvider system, IBar bar);
         void Delete(IDataProvider system, IBar bar);
 
-     //   IBar this[int i] { get; }
         int Count { get; }
 
         IBar First { get; }
@@ -24,6 +23,7 @@ namespace OpenWealth
         /// <summary>
         /// Возвращает бар, с указанным временем, или ближайший бар с меньшим временем
         /// Если найдено несколько баров с указанным временем, то возвращает последний из найденных
+        /// Если дата первого бара больше, чем dt, то возвращается null
         /// </summary>
         IBar Get(int dt);
         IBar GetPrevious(IBar bar);

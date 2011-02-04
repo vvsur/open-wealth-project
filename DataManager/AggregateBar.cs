@@ -41,15 +41,15 @@ namespace OpenWealth.DataManager
             Volume = 0;
         }
 
-        public AggregateBar(int dt, int number,
+        public AggregateBar(int dt, int endDT, int number,
             float open, float high, float low, float close, int volume)
-            : base(dt, number, open, high, low, close, volume)
+            : base(dt, endDT, number, open, high, low, close, volume)
         {            
         }
 
-        public AggregateBar(int dt, int number,
+        public AggregateBar(int dt, int endDT, int number,
             float price, int volume)
-            : base(dt, number, price, price, price, price, volume)
+            : base(dt, endDT, number, price, price, price, price, volume)
         {
         }
     }
