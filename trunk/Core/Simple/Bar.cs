@@ -13,6 +13,7 @@ namespace OpenWealth.Simple
         private readonly static DateTime dt1970 = new DateTime(1970, 1, 1);
 
         public int DT { get; protected set; }
+        public int EndDT { get; protected set; }
         public int Number { get; protected set; }
         public float Open { get; protected set; }
         public float High { get; protected set; }
@@ -23,10 +24,11 @@ namespace OpenWealth.Simple
         {
             return dt1970 + new TimeSpan(DT * TimeSpan.TicksPerSecond);
         }
-
-        public Bar(DateTime dt, int number, float open, float high, float low, float close, int volume)
+        
+        /*        public Bar(int dt, int endDT, int number, float open, float high, float low, float close, int volume)
         {
-            this.DT = (int)((TimeSpan)(dt - dt1970)).TotalSeconds;
+            this.DT = dt;
+            this.EndDT = endDT;
             this.Number = number;
             this.Open = open;
             this.High = high;
@@ -34,10 +36,12 @@ namespace OpenWealth.Simple
             this.Close = close;
             this.Volume = volume;
         }
+        */
 
-        public Bar(int dt, int number, float open, float high, float low, float close, int volume)
+        public Bar(int dt, int endDT, int number, float open, float high, float low, float close, int volume)
         {
             this.DT = dt;
+            this.EndDT = endDT;
             this.Number = number;
             this.Open = open;
             this.High = high;

@@ -8,7 +8,9 @@ namespace TEST_bot_BackTestHost
 {
     class BotHost : IBotHost
     {
-        Dictionary<string, BotParam> botParams = new Dictionary<string, BotParam>();
+        #region Params +
+
+        IDictionary<string, BotParam> botParams = new Dictionary<string, BotParam>();
         public BotParam GetParam(string name, double minValue, double maxValue, double defaultValue)
         {
             BotParam result;
@@ -19,16 +21,24 @@ namespace TEST_bot_BackTestHost
             }
             return result;
         }
+        IDictionary<string, BotParam> Params { get { return botParams; } }
 
-        // Время первого и последнего bar'а для теста
-        int endDT;
-        int startDT;
+        #endregion
+
+        public int startDT { get; private set; }
+        public int endDT { get; private set; }
 
         public ISymbol Symbol { get; private set; }
-        public IScale Scale { get; private set; } // слово new - это минус в сторону partial
+        public IScale Scale { get; private set; } 
         public int MaxPosition { get; private set; }
 
         public IBot Robot { get; private set; }
+
+        public IBars Bars { get; private set; }
+        public IBar LastBar { get; private set; }
+
+        public IBars Ticks { get; private set; }
+        public IBar LastTick { get; private set; }
 
         public void BuyAtMarket(int qty)
         {
@@ -64,11 +74,82 @@ namespace TEST_bot_BackTestHost
 
         public Position Pos { get; private set; }
 
-        // текущее время
-        public int DT { get { throw new NotImplementedException(); } }
+        public int DT { get; private set; }
         public DateTime Now { get { return DateTime2Int.DateTime(DT); } }
 
-        // событие, возникающее в момент когда бар полностью сформирован
+        bool stopFlag, newBarFlag;
+        public void Start()
+        {
+            stopFlag = false;
+            newBarFlag = true;
+
+            LastBar = Bars.Get(startDT);
+            if (LastBar == null)
+                LastBar = Bars.First;
+
+            LastTick = Ticks.Get(startDT);
+            if (LastTick == null)
+                LastTick = Ticks.First;
+
+            DT = startDT;
+            DateTime Day = DateTime2Int.DateTime(DT).Date;
+
+            while ((!stopFlag) && (LastTick.DT <= endDT))
+            {
+                // Рассчет исполнения активных заявок 
+                throw new NotImplementedException();  onDeal!!!!
+
+                #region  Вызов событий onTick onBar
+                EventHandler<BarsEventArgs> onTickHandler = onTick;
+                if (onTickHandler != null)
+                    onTickHandler(this, new BarsEventArgs(Ticks, LastTick));
+
+                if (newBarFlag)
+                {
+                    EventHandler<BarsEventArgs> onBarHandler = onBar;
+                    if (onBarHandler != null)
+                        onBarHandler(this, new BarsEventArgs(Bars, LastBar));
+                    newBarFlag = false;
+                }
+                #endregion
+
+                // Получаю следующий тик
+                IBar newLastTick = Ticks.GetNext(LastTick);
+
+                #region Inc(DT);// В зависимости от того, существуют ли подписчики на onSec и onNewDay увиличиваю DT инкриментом или значением из нового тика
+
+                EventHandler<EventArgs> onSecHandler = onSec;
+                EventHandler<EventArgs> onNewDayHandler = onNewDay;
+
+                if ((onSecHandler != null) || (onNewDayHandler != null))
+                    while (newLastTick.DT > DT)
+                    {
+                        DT += 1;
+                        onSecHandler(this, null);
+                        if (Day != DateTime2Int.DateTime(DT).Date)
+                        {
+                            onNewDayHandler(this, null);
+                            Day = DateTime2Int.DateTime(DT).Date;
+                        }
+                    }
+                else
+                    DT = newLastTick.DT;
+
+                #endregion
+
+                LastTick = newLastTick;
+                if (LastTick.DT > LastBar.EndDT)
+                {
+                    LastBar = Bars.GetNext(LastBar);
+                    newBarFlag = true;
+                }
+            }
+        }
+        public void Stop()
+        {
+            stopFlag = true;
+        }
+
         public event EventHandler<BarsEventArgs> onBar;
         public event EventHandler<BarsEventArgs> onTick;
         public event EventHandler<DealEventArgs> onDeal;

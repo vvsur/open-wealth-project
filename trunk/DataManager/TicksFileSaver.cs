@@ -44,7 +44,7 @@ namespace OpenWealth.DataManager
             try
             {
                 int queue_Count = 0;
-                while (KeepRunning || (queue_Count > 0))
+                while (KeepRunning || (queue_Count > 0)) // TODO Error бесконечный цикл, иногда программа не выходила из него (см. ERROR ниже)
                 {
                     lock (queue)
                     {
@@ -53,7 +53,7 @@ namespace OpenWealth.DataManager
                     if (queue_Count == 0)
                     {
                         mre.WaitOne(10000);
-                        mre.Reset();
+                        mre.Reset();         // ERROR похоже что она весела здесь
                     }
                     SaveTask task = null;
                     lock (queue)
