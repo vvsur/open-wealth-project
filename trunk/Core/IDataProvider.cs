@@ -2,6 +2,9 @@
 
 namespace OpenWealth
 {
+    /// <summary>
+    /// Интерфейс, описывающий провайдера данных
+    /// </summary>
     public interface IDataProvider
     {
         /// <summary>

@@ -2,6 +2,11 @@
 
 namespace OpenWealth
 {
+    /// <summary>
+    /// Интерфейс, описывающий способ хранение настроек в программе.
+    /// Простейная реализация, сохраняющая настройки в xml описана в OpenWealth.Simple.SettingsHost
+    /// но никто не запрешает в будущем завернуть это в БД или ещё куда нибудь
+    /// </summary>
     public interface ISettingsHost
     {
         bool ContainsKey(string key);
