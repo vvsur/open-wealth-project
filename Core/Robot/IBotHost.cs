@@ -19,9 +19,6 @@ namespace OpenWealth
         IBars Bars { get; }
         IBar LastBar { get; }
 
-        IBars Ticks { get; }
-        IBar LastTick { get; }
-
         int MaxPosition { get; }
         IBot Robot { get; }
 
@@ -30,9 +27,9 @@ namespace OpenWealth
         void BuyAtLimit(int qty, float limit);
         void SellAtLimit(int qty, float limit);
 
-        IList<IOrder> GetAllOrders();
-        IList<IOrder> GetActiveOrders();
-        IList<IDeal> GetMyDeal();
+        IList<IOrder> AllOrders { get; }
+        IList<IOrder> ActiveOrders { get; }
+        IList<IDeal> MyDeal { get; }
 
         Position Pos { get; }
 
@@ -52,11 +49,6 @@ namespace OpenWealth
         /// событие, возникающее в момент когда бар полностью сформирован
         /// </summary>
         event EventHandler<BarsEventArgs> onBar;
-        /// <summary>
-        /// Событие возникает на каждый тик
-        /// !!!!! При бэктестинге цена закрытия у LastBar будет указывать на будущее закрытие, поэтому использовать данное событие в роботах не рекомендуется
-        /// </summary>
-        event EventHandler<BarsEventArgs> onTick;
         event EventHandler<DealEventArgs> onDeal;
         event EventHandler<EventArgs> onSec;
         event EventHandler<EventArgs> onNewDay;

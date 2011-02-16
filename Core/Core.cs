@@ -9,6 +9,7 @@ namespace OpenWealth
     /// <summary>
     /// Основной класс ядра
     /// Содержит только статические методы и свойства
+    /// логику см. в _readme.txt
     /// </summary>
     public static class Core
     {        

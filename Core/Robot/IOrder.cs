@@ -24,6 +24,7 @@ namespace OpenWealth
         float Price { get; }
         int Volue { get; }
         int QTY { get; }
+        IEnumerable<IOrder> Deals { get; }
 
         IOrder PrevOrderState { get; }
 

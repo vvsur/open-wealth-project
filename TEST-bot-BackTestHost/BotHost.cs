@@ -8,6 +8,8 @@ namespace TEST_bot_BackTestHost
 {
     class BotHost : IBotHost
     {
+        static ILog l = Core.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         #region Params +
 
         IDictionary<string, BotParam> botParams = new Dictionary<string, BotParam>();
@@ -37,13 +39,21 @@ namespace TEST_bot_BackTestHost
         public IBars Bars { get; private set; }
         public IBar LastBar { get; private set; }
 
-        public IBars Ticks { get; private set; }
-        public IBar LastTick { get; private set; }
+        public IBars ticks { get; private set; }
+        public IBar lastTick { get; private set; }
+
+        #region Выставление заявок
+
+        IList<IOrder> allOrders = new List<IOrder>();
+        IList<IOrder> activeOrders = new List<IOrder>();
 
         public void BuyAtMarket(int qty)
         {
-            throw new NotImplementedException();
+            IOrder order = new Order();
+            allOrders.Add(order);
+            activeOrders.Add(order);
         }
+
         public void SellAtMarket(int qty)
         {
             throw new NotImplementedException();
@@ -57,19 +67,30 @@ namespace TEST_bot_BackTestHost
             throw new NotImplementedException();
         }
 
-        public IList<IOrder> GetAllOrders()
+        #endregion
+
+        public IList<IOrder> AllOrders
         {
-            throw new NotImplementedException();
+            get
+            {
+                return allOrders;
+            }
         }
 
-        public IList<IOrder> GetActiveOrders()
+        public IList<IOrder> ActiveOrders
         {
-            throw new NotImplementedException();
+            get
+            {
+                return activeOrders;
+            }
         }
 
-        public IList<IDeal> GetMyDeal()
+        public IList<IDeal> MyDeal
         {
-            throw new NotImplementedException();
+            get
+            {
+                throw new NotImplementedException();
+            }            
         }
 
         public Position Pos { get; private set; }
@@ -83,27 +104,32 @@ namespace TEST_bot_BackTestHost
             stopFlag = false;
             newBarFlag = true;
 
-            LastBar = Bars.Get(startDT);
-            if (LastBar == null)
-                LastBar = Bars.First;
+            lastTick = ticks.Get(startDT);
+            if (lastTick == null)
+                lastTick = ticks.First;
 
-            LastTick = Ticks.Get(startDT);
-            if (LastTick == null)
-                LastTick = Ticks.First;
+            if ((lastTick == null) || (lastTick.DT > endDT))
+            {
+                l.Info("Нет данных, для данного временного периода");
+                return;
+            }
+
+            LastBar = Bars.Get(lastTick.DT);
+            if (LastBar == null)
+            {
+                l.Error("Тик есть, а бара нет :(");
+                return;
+            }
 
             DT = startDT;
-            DateTime Day = DateTime2Int.DateTime(DT).Date;
+            DateTime day = DateTime2Int.DateTime(DT).Date;
 
-            while ((!stopFlag) && (LastTick.DT <= endDT))
+            while ((!stopFlag) && (LastTick != null) && (LastBar != null) && (LastTick.DT <= endDT))
             {
                 // Рассчет исполнения активных заявок 
-                throw new NotImplementedException();  onDeal!!!!
+                !!!
 
-                #region  Вызов событий onTick onBar
-                EventHandler<BarsEventArgs> onTickHandler = onTick;
-                if (onTickHandler != null)
-                    onTickHandler(this, new BarsEventArgs(Ticks, LastTick));
-
+                #region  Вызов события onBar
                 if (newBarFlag)
                 {
                     EventHandler<BarsEventArgs> onBarHandler = onBar;
@@ -114,31 +140,37 @@ namespace TEST_bot_BackTestHost
                 #endregion
 
                 // Получаю следующий тик
-                IBar newLastTick = Ticks.GetNext(LastTick);
+                IBar newLastTick = ticks.GetNext(lastTick);
 
                 #region Inc(DT);// В зависимости от того, существуют ли подписчики на onSec и onNewDay увиличиваю DT инкриментом или значением из нового тика
 
                 EventHandler<EventArgs> onSecHandler = onSec;
                 EventHandler<EventArgs> onNewDayHandler = onNewDay;
 
+                int toDT = endDT;
+                if (newLastTick != null)
+                    toDT = newLastTick.DT;
+
                 if ((onSecHandler != null) || (onNewDayHandler != null))
-                    while (newLastTick.DT > DT)
+                {
+                    while (toDT > DT)
                     {
                         DT += 1;
                         onSecHandler(this, null);
-                        if (Day != DateTime2Int.DateTime(DT).Date)
+                        if (day != DateTime2Int.DateTime(DT).Date)
                         {
                             onNewDayHandler(this, null);
-                            Day = DateTime2Int.DateTime(DT).Date;
+                            day = DateTime2Int.DateTime(DT).Date;
                         }
                     }
+                }
                 else
-                    DT = newLastTick.DT;
+                    DT = toDT;
 
                 #endregion
 
-                LastTick = newLastTick;
-                if (LastTick.DT > LastBar.EndDT)
+                lastTick = newLastTick;
+                if ((lastTick != null) && (lastTick.DT > LastBar.EndDT))
                 {
                     LastBar = Bars.GetNext(LastBar);
                     newBarFlag = true;
