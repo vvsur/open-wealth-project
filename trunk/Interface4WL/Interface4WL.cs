@@ -6,7 +6,7 @@ namespace OpenWealth.WLProvider
 {
     public class Interface4WL : IPlugin, IInterface
     {
-        private static readonly ILog l = Core.GetLogger(typeof(Interface4WL).FullName);
+        static ILog l = Core.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Form mainForm;
         private object mainFormLocker = new object();
         private List<DynMenuItem> menuItemList = new List<DynMenuItem>();
@@ -85,7 +85,7 @@ namespace OpenWealth.WLProvider
 
                         openWealthItem = new ToolStripMenuItem("O&penWealth");
                         form.MainMenuStrip.Items.Insert(toolsIndex, this.openWealthItem);
-                    }
+                    }c
                 }
 
                 ToolStripMenuItem menuItem1 = GetMenuItem(openWealthItem, textLevel1, textLevel2, callback);

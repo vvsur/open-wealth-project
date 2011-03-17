@@ -52,7 +52,7 @@ namespace OpenWealth.DataManager
                     }
                     if (queue_Count == 0)
                     {
-                        mre.WaitOne(10000);
+                        mre.WaitOne(10000,false);
                         mre.Reset();         // ERROR похоже что она весела здесь
                     }
                     SaveTask task = null;

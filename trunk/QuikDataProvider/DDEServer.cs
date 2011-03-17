@@ -5,7 +5,7 @@ namespace OpenWealth.QuikDataProvider.DDE
 {
     public class DDEServer : DdeServer
     {
-        static ILog l = Core.GetLogger(typeof(DDEServer).FullName);
+        static ILog l = Core.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public delegate void ConnectionEventDelegate(NDde.Server.DdeConversation conv);
 

@@ -78,7 +78,7 @@ namespace FDownloader
 
         private void timerOnlyOne_Tick(object sender, EventArgs e)
         {
-            if (onlyOne.WaitOne(0))
+            if (onlyOne.WaitOne(0,false))
             {
                 timerOnlyOne.Enabled = false;
                 labelOnlyOne.Visible = false;
