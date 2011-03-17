@@ -6,6 +6,7 @@ using OpenWealth;
 
 namespace TEST_bot_BackTestHost
 {
+    /*
     class BotHost : IBotHost
     {
         static ILog l = Core.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -188,4 +189,5 @@ namespace TEST_bot_BackTestHost
         public event EventHandler<EventArgs> onSec;
         public event EventHandler<EventArgs> onNewDay;
      }
+    */
 }

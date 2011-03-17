@@ -35,9 +35,9 @@ namespace TEST_bot_BackTestHost
             if (bh != null)
             {
                 bh.onBar -= new EventHandler<BarsEventArgs>(onBar);
-                IList<IOrder> activeOrders = bh.GetActiveOrders();
-                foreach (IOrder order in activeOrders)
-                    order.Cancel();
+                //IList<IOrder> activeOrders = bh.GetActiveOrders();
+                //foreach (IOrder order in activeOrders)
+                  //  order.Cancel();
             }
         }
 
