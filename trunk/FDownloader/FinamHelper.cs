@@ -105,6 +105,8 @@ namespace FDownloader
             // скачиваю js
             string instruments = webClient.DownloadString(@"http://www.finam.ru/scripts/export.js");
 
+            instruments = instruments.Replace("\\'", "-"); // убрать кавычки из списка эмитентов, в противном случае строка не парситься
+
             String pattern = @"var\saEmitentIds=new\sArray\((?<EmitentIds>.*?)\);" + "(.|\n)*?" +
                              @"var\saEmitentNames=new\sArray\((?<EmitentNames>.*?)\);" + "(.|\n)*?" +
                              @"var\saEmitentCodes=new\sArray\((?<EmitentCodes>.*?)\);" + "(.|\n)*?" +
